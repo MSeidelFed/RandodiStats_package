@@ -1,6 +1,8 @@
 # R package RandodiStats
 Random distributions and their statistics
 
+## Installation
+
 Install via "devtools"
 
 ```
@@ -11,7 +13,7 @@ devtools::install_github("MSeidelFed/RandodiStats")
 library(RandodiStats)
 ```
 
-## documentation of the functions
+## Documentation of usage
 
 ```
 ?RandodiStats::distribution_test_mat()
@@ -23,7 +25,7 @@ library(RandodiStats)
 ?RandodiStats::plotting_distributions()
 ```
 
-## needed objects
+## Needed objects
 
 All our functions take as input a matrix with the same format, to check the format of the input matrix use the "distribution_test_mat()" function:
 
