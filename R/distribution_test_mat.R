@@ -56,7 +56,7 @@ distribution_test_mat <- function(nrow_x = 1000, n_random_distributions = 1000) 
   test7 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
   for (i in 1:n_random_distributions) {
 
-    x <- round(rexp(n = 100), 1)
+    x <- round(rexp(n = nrow_x), 1)
     test7[,i] <- x
   }
   return(cbind(test1, test2, test3, test4, test5, test6, test7))
