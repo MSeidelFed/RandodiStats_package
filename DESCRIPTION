@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "mseidel@mpimp-golm.mpg.de")
 License: BSD_2_clause + file LICENSE
-Depends: R (>= 3.0.0),raster (>= 3.1-5), fitdistrplus
+Depends: R (>= 3.0.0),raster , fitdistrplus
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
