@@ -8,9 +8,9 @@ Install via "devtools"
 ```
 library(devtools)
 
-devtools::install_github("MSeidelFed/RandodiStats")
+devtools::install_github("MSeidelFed/RandodiStats_package")
 
-library(RandodiStats)
+library(RandodiStats_package)
 ```
 
 ## Documentation of usage
