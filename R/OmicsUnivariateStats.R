@@ -20,12 +20,14 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     class_comparison_mat[which(class_comparison_mat == 0)] <- 0.0001
 
   }
-
+  
   regfamily <- testing_distributions(class_comparison_mat)
 
   ## defining the formula for the models
 
   if (length(Factor2) > 1) {
+    
+    FactorNo <- 2
 
     if (Contrast == T) { Formula = class_comparison_mat[,i] ~ Factor1 * Factor2}
     else {  Formula = class_comparison_mat[,i] ~ Factor1 + Factor2 }
@@ -33,13 +35,60 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     Levene_factor = paste(Factor1, Factor2, sep = "_")
 
   } else {
+    
+    FactorNo <- 1
 
     Formula = class_comparison_mat[,i] ~ Factor1
     Levene_factor = Factor1
 
   }
+  
+  print(Formula)
+  
+  #print(dim(class_comparison_mat))
+  
+  ## Levene´s test produces errors when there is no variance between treatments, 
+  ## here we remove features with no sd in individual treatments
+  
+  mean_treatment_sd <- c()
+  
+  for (i in 1:dim(class_comparison_mat)[2]) {
+    
+    mean_treatment_sd[i] <- mean(aggregate(Formula, FUN = sd)[,(FactorNo + 1)])
+    
+    #print(mean_treatment_sd[i])
+  }
+  
+  null_sd_features <- colnames(class_comparison_mat[,which(mean_treatment_sd == 0)])
+  
+  #print(null_sd_features)
+  
+  if (length(null_sd_features) > 0) {
+    
+    cat("Features with NULL factor variance : ", null_sd_features)
+    cat("...", "\n")
+    
+    class_comparison_mat = as.matrix(class_comparison_mat[,-c(which(mean_treatment_sd == 0))])
+    
+    #print(dim(class_comparison_mat))
+  }
+  
+  ### removing features with global null standard deviation
+  
+  test_global_sd <- which(rowSds(as.matrix(class_comparison_mat)) == 0)
+  
+  if (length(test_global_sd) > 0) {
+    
+    class_comparison_mat = as.matrix(class_comparison_mat[,-c(test_global_sd)])
+    
+    #print(dim(class_comparison_mat))
+    
+  }
 
-  ## empty mat to store results
+  
+  ## for loop for tests
+
+  ### empty mat to store results
 
   i = 1
 
@@ -47,8 +96,6 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                      nrow = dim(class_comparison_mat)[2],
                      ncol = length(c(glm(Formula)[["coefficients"]],
                                      "Homoscedastic & Parametric")))
-
-  ## for loop for tests
 
   count = 0
 
