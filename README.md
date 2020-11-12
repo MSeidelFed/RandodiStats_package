@@ -40,4 +40,5 @@ test_mat <- distribution_test_mat()
 library(fitdistrplus)
 library(raster)
 library(lawstat)
+library(matrixStats)
 ```
