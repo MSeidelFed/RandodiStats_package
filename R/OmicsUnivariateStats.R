@@ -2,12 +2,14 @@
 #'
 #' This function allows you to test response variables using a generalized linear model with one or two factors and multiple levels per factor, i.e., multiple regressors, customizing the family of regression for each test according to the response variable distribution.
 #' @param class_comparison_mat Defaults to distribution_test_mat().
-#' @param Factor1.
+#' @param Factor1. Needs to be defined
 #' @param Factor2 defaults to NULL.
 #' @param Contrast defaults to TRUE.
 #' @keywords Univariate Statistics
 #' @export
 #' @examples
+#' Factor1_eg <- as.factor(c(rep("RED", 200), rep("GREEN", 200), rep("BLACK", 200),rep("WHITE", 200), rep("YELLOW", 200)))
+#' test_OUS <- OmicsUnivariateStats(Factor1 = Factor1_eg)
 #' ...
 
 OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_mat()),
