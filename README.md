@@ -1,6 +1,10 @@
 # R package RandodiStats
 Random distributions and their statistics
 
+## First step
+
+It is necessary to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/history.html) before starting
+
 ## Installation
 
 Install via "devtools"
