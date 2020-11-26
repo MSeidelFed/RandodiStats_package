@@ -83,7 +83,7 @@ test_CP <- ClustPlus()
 
 ### k-means
 
-tetest_Km <- KmeansPlus(DataDir = distribution_test_mat(nrow_x = 20, n_random_distributions = 10), n_boot = 1)
+test_Km <- KmeansPlus(DataDir = distribution_test_mat(nrow_x = 20, n_random_distributions = 10), n_boot = 1)
 
 ```
 
