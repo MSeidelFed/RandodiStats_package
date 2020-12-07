@@ -20,7 +20,7 @@
 
 KmeansPlus <- function(DataDir = distribution_test_mat(),
                        returnClustMeanPlots = T,
-                       returnClustDendrogram = T,
+                       returnClustDendrogram = NULL,
                        returnClustFeatures = T,
                        k = 5,
                        n_boot = 100,
@@ -129,25 +129,25 @@ KmeansPlus <- function(DataDir = distribution_test_mat(),
   cat("Iterating Kmean clustering to get consensus...", "\n")
   cat("\n")
 
-  Scal_Heatmap <- Heatmap(matrix = scaled_mat,
-                          name = "Intensities",
-                          km = k, ## five K-means
-                          row_km_repeats = n_boot, ## repeats to get consensus
-                          col = colorRamp2(col,
-                                           c("white",
-                                             "yellow",
-                                             "darkgoldenrod1",
-                                             "violet",
-                                             "purple")),
-                          top_annotation = ha ,
-                          show_column_names = F,
-                          show_row_names = F,
-                          cluster_columns = F,
-                          cluster_rows = T,
-                          clustering_method_rows = ClustMethod,
-                          clustering_distance_rows = ClustDist)
+  rowOrder     <- row_order(Heatmap(matrix = scaled_mat,
+                            name = "Intensities",
+                            km = k, ## five K-means
+                            row_km_repeats = n_boot, ## repeats to get consensus
+                            col = colorRamp2(col,
+                                             c("white",
+                                               "yellow",
+                                               "darkgoldenrod1",
+                                               "violet",
+                                               "purple")),
+                            top_annotation = ha ,
+                            show_column_names = F,
+                            show_row_names = F,
+                            cluster_columns = F,
+                            cluster_rows = T,
+                            clustering_method_rows = ClustMethod,
+                            clustering_distance_rows = ClustDist))
 
-  rowOrder <- row_order(Scal_Heatmap)
+  #rowOrder <- row_order(Scal_Heatmap)
 
   ## output 1 = metabolites per treatment
 
@@ -204,13 +204,13 @@ KmeansPlus <- function(DataDir = distribution_test_mat(),
 
   }
 
-  if (returnClustDendrogram == T) {
+  #if (returnClustDendrogram == T) {
 
-    png("ClustDendrogram.png")
-    print(Scal_Heatmap)
-    dev.off
+   # png("ClustDendrogram.png")
+    #print(Scal_Heatmap)
+    #dev.off
 
-  }
+  #}
 
   if (returnClustFeatures == T) {
 
