@@ -14,7 +14,7 @@ library(devtools)
 
 devtools::install_github("MSeidelFed/RandodiStats_package")
 
-library(RandodiStats_package)
+library(RandoDiStats)
 ```
 
 ## Documentation of usage
