@@ -17,7 +17,8 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
                                    transparency = 90,
                                    variable_name = "test_mat",
                                    ylim_plot = NULL,
-                                   xlim_plot = NULL) {
+                                   xlim_plot = NULL,
+                                   MainPlotName = NULL) {
 
   ## necessary functions
 
@@ -68,6 +69,12 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
     
     xlim_plot = c(min(complete_mat[,1]),
                 max(complete_mat[,1]))
+    
+  }
+  
+  if (is.null(MainPlotName)) {
+    
+    MainPlotName = "Test"
     
   }
   
