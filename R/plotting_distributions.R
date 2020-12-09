@@ -13,13 +13,11 @@
 #' plotting_distributions()
 
 plotting_distributions <- function(test_mat = distribution_test_mat(class_method = "discovery"),
-                                   vector_colors = "grey",
+                                   vector_colors = "black",
                                    transparency = 90,
                                    variable_name = "test_mat",
-                                   ylim_plot = c(max(Variables2Shapes(test_mat)[,2]),
-                                                 min(Variables2Shapes(test_mat)[,2])),
-                                   xlim_plot = c(min(Variables2Shapes(test_mat)[,1]),
-                                                 max(Variables2Shapes(test_mat)[,1]))) {
+                                   ylim_plot = NULL,
+                                   xlim_plot = NULL) {
 
   ## necessary functions
 
@@ -45,7 +43,7 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
   ## setting colors for plot
   colours <- c(rep("blue", 1000),
                rep("red", 1000),
-               rep("black", 1000),
+               rep("grey", 1000),
                rep("yellow", 1000),
                rep("pink", 1000),
                rep("orange", 1000),
@@ -56,6 +54,23 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
   ## setting mat for plot
   complete_mat <- rbind(Variables2Shapes(Distribution_test_mat = distribution_test_mat(class_method = "discovery")),
                         Variables2Shapes(test_mat))
+  
+  complete_mat = na.omit(complete_mat)
+  
+  if (is.null(ylim_plot)) {
+    
+    ylim_plot = c(max(complete_mat[,2]),
+                min(complete_mat[,2])) 
+    
+  }
+  
+  if (is.null(xlim_plot)) {
+    
+    xlim_plot = c(min(complete_mat[,1]),
+                max(complete_mat[,1]))
+    
+  }
+  
   ## plot
   plot(complete_mat,
        ylim = ylim_plot,
@@ -63,7 +78,7 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
        col = colours)
 
   legend("topright",
-         col = c("blue","red","black","yellow","pink","orange","purple", vector_colors),
+         col = c("blue","red","grey","yellow","pink","orange","purple", vector_colors),
          pch = 18,
          legend = c("gamma","logis","beta","normal","binomial","poisson","exponential", variable_name))
 
