@@ -37,9 +37,12 @@ testing_distributions <- function(Distribution_test_mat = distribution_test_mat(
   for (i in 1:dim(dist_mat)[1]) {
 
     test <- Family_selection_GLM_R[, "GLM_R"][which(dist_mat[i,] == min(dist_mat[i,]))]
-
-    runner[i] <- test
-
+    
+    if (length(test) > 0) {
+      
+      runner[i] <- test
+      
+    }
   }
 
   return(runner)
