@@ -20,13 +20,18 @@ library(RandoDiStats)
 ## Documentation of usage
 
 ```{r}
-?RandodiStats::distribution_test_mat()
+?RandoDiStats::distribution_test_mat()
 
-?RandodiStats::testing_distributions()
+?RandoDiStats::testing_distributions()
 
-?RandodiStats::Variables2Shapes()
+?RandoDiStats::Variables2Shapes()
 
-?RandodiStats::plotting_distributions()
+?RandoDiStats::plotting_distributions()
+
+?RandoDiStats::ClustPlus()
+
+?RandoDiStats::KmeansPlus()
+
 ```
 
 ## Needed objects
