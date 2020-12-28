@@ -167,31 +167,43 @@ KmeansPlus <- function(DataDir = distribution_test_mat(),
 
    ## Generating consensus y-axis
 
-  if (consensusYAxis == T) {
+  if (class(consensusYAxis) == "logical") {
 
-    Axis_max <- c()
+    if (consensusYAxis == T) {
 
-    Axis_min <- c()
+      Axis_max <- c()
 
-    for (i in 1:length(rowOrder)) {
+      Axis_min <- c()
 
-      cluster_K_mat <- scaled_mat[rowOrder[[i]],]
+      for (i in 1:length(rowOrder)) {
 
-      if (is.null(dim(cluster_K_mat))) {
+        cluster_K_mat <- scaled_mat[rowOrder[[i]],]
 
-      } else {
+        if (is.null(dim(cluster_K_mat))) {
 
-        Cluster_Melted2 <- melt(cluster_K_mat)
+        } else {
 
-        Axis_max[i] <- max(Cluster_Melted2$value)
+          Cluster_Melted2 <- melt(cluster_K_mat)
 
-        Axis_min[i] <- min(Cluster_Melted2$value)
+          Axis_max[i] <- max(Cluster_Melted2$value)
+
+          Axis_min[i] <- min(Cluster_Melted2$value)
+
+        }
 
       }
 
+      y_Axis <- c(min(Axis_min), max(Axis_max))
+
     }
 
-    y_Axis <- c(min(Axis_min), max(Axis_max))
+  } else if (class(consensusYAxis) == "numeric") {
+
+    y_Axis <- consensusYAxis
+
+  } else {
+
+    cat("consensusYAxis: Provide either logical F or T, or numeric axes coords, e.g., c(x0,xn)")
 
   }
 
@@ -224,7 +236,7 @@ KmeansPlus <- function(DataDir = distribution_test_mat(),
 
         c <- ggplot(Cluster_Melted2, aes(x = Var2 , y = value))
 
-        if (consensusYAxis == T) {
+        if (consensusYAxis != F) {
 
           print(c +
                   geom_smooth() +
