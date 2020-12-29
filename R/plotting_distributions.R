@@ -82,7 +82,8 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
   plot(complete_mat,
        ylim = ylim_plot,
        xlim = xlim_plot,
-       col = colours)
+       col = colours,
+       main = MainPlotName)
 
   legend("topright",
          col = c("blue","red","grey","yellow","pink","orange","purple", vector_colors),
