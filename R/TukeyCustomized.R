@@ -47,13 +47,13 @@ TukeyCustomized <- function(variable,
     # Extract labels and factor levels from Tukey post-hoc
     Tukey.levels <- TUKEY[[variable]][,4]
 
-    if (length(Tukey.levels) == 1 & TUKEY[["data$treatment"]][,4] < 0.05) {
+    if (length(Tukey.levels) == 1 & min(TUKEY[["data$treatment"]][,4]) < 0.05) {
 
       Tukey.labels <- as.data.frame(cbind(Letters = c("a", "b")))
 
       rownames(Tukey.labels) <- strsplit(rownames(TUKEY[["data$treatment"]]), "-")[[1]]
 
-    } else if (length(Tukey.levels) == 1 & TUKEY[["data$treatment"]][,4] > 0.05) {
+    } else if (length(Tukey.levels) == 1 & min(TUKEY[["data$treatment"]][,4]) > 0.05) {
 
       Tukey.labels <- as.data.frame(cbind(Letters = c("a", "a")))
 
