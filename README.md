@@ -32,6 +32,8 @@ library(RandoDiStats)
 
 ?RandoDiStats::KmeansPlus()
 
+?RandoDiStats::PlusPCA()
+
 ```
 
 ## Needed objects
@@ -91,6 +93,10 @@ test_CP <- ClustPlus()
 ### k-means
 
 test_Km <- KmeansPlus(DataDir = distribution_test_mat(nrow_x = 20, n_random_distributions = 10), n_boot = 1)
+
+### PCA
+
+PlusPCA(Km = KmeansPlus())
 
 ```
 
