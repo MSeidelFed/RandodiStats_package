@@ -56,6 +56,8 @@ library(ComplexHeatmap)
 library(circlize)
 library(ggplot2)
 library(reshape2)
+library(ggfortify)
+library(plotrix)
 ```
 
 
