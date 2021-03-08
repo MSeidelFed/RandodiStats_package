@@ -42,18 +42,18 @@ TukeyCustomized <- function(variable,
 
 
   # I need to group the treatments that are not different from each other together.
-  generate_label_df <- function(TUKEY, variable){
+  generate_label_df <- function(TUKEY){
 
     # Extract labels and factor levels from Tukey post-hoc
-    Tukey.levels <- TUKEY[[variable]][,4]
+    Tukey.levels <- TUKEY[["data$treatment"]][,4]
 
-    if (length(Tukey.levels) == 1 & min(TUKEY[["data$treatment"]][,4]) < 0.05) {
+    if (length(Tukey.levels) == 1 & TUKEY[["data$treatment"]][,4][1] < 0.05) {
 
       Tukey.labels <- as.data.frame(cbind(Letters = c("a", "b")))
 
       rownames(Tukey.labels) <- strsplit(rownames(TUKEY[["data$treatment"]]), "-")[[1]]
 
-    } else if (length(Tukey.levels) == 1 & min(TUKEY[["data$treatment"]][,4]) > 0.05) {
+    } else if (length(Tukey.levels) == 1 & TUKEY[["data$treatment"]][,4][1] > 0.05) {
 
       Tukey.labels <- as.data.frame(cbind(Letters = c("a", "a")))
 
@@ -72,7 +72,7 @@ TukeyCustomized <- function(variable,
   }
 
   # Apply the function on my dataset
-  LABELS=generate_label_df(TUKEY = TUKEY, variable = "data$treatment")
+  LABELS=generate_label_df(TUKEY = TUKEY)
 
 
   # A panel of colors to draw each group with the same color :
@@ -83,14 +83,16 @@ TukeyCustomized <- function(variable,
                rgb(74,132,54,maxColorValue = 255),
                rgb(236,33,39,maxColorValue = 255),
                rgb(165,103,40,maxColorValue = 255))
+  
+  
 
-  if (max(data$value) > 0) {
+  if (max(na.omit(data$value)) > 0) {
 
-    ylims = c(min(data$value), 1.1*max(data$value))
+    ylims = c(min(na.omit(data$value)), 1.1*max(na.omit(data$value)))
 
   } else {
 
-    ylims = c(1.1*min(data$value), max(data$value))
+    ylims = c(1.1*min(na.omit(data$value)), max(na.omit(data$value)))
 
   }
 
@@ -108,7 +110,7 @@ TukeyCustomized <- function(variable,
   #Add the labels
   text( c(1:nlevels(data$treatment)) , a$stats[nrow(a$stats),]+over ,
         LABELS[,1]  , col=my_colors[as.numeric(LABELS[,1])] )
-
-
+  
+  return(LABELS)
 
 }
