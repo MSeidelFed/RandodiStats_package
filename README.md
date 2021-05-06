@@ -118,6 +118,6 @@ PlusPCA(Km = KmeansPlus())
 
 ```
 
-The recommended transformations are meant to cope with the intrinsic limitations of the different GLM families used for parametrization and do not alter the variance component of response variables, thus significance remain intact and reflect the biology of the treatments. 
+The recommended transformations are meant to cope with the intrinsic limitations of the different GLM families used for parametrization and do not alter the variance component of response variables, thus significance remains intact and reflect the biology of the treatments. 
 
 
