@@ -90,11 +90,11 @@ Factor1_eg <- as.factor(c(rep("RED", 200), rep("GREEN", 200), rep("BLACK", 200),
 
 #### 1. unity-based normalization
 
-mat_Ubased_norm <- (mat - rep(colMins(mat),
+mat_Ubased_norm <- (mat - rep(colMins(mat, na.rm = T),
                               rep.int(nrow(mat),
-                                      ncol(mat)))) / (rep(colMaxs(mat),
+                                      ncol(mat)))) / (rep(colMaxs(mat, na.rm = T),
                                                           rep.int(nrow(mat),
-                                                                  ncol(mat))) - rep(colMins(mat),
+                                                                  ncol(mat))) - rep(colMins(mat, na.rm = T),
                                                                                     rep.int(nrow(mat),
                                                                                             ncol(mat))))
 
