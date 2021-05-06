@@ -85,6 +85,22 @@ Variables2Shapes()
 ### this needs to be a factor with the same size as rows in your columns and is meant to cover the treatment/s
 Factor1_eg <- as.factor(c(rep("RED", 200), rep("GREEN", 200), rep("BLACK", 200),
                           rep("WHITE", 200), rep("YELLOW", 200)))
+                          
+### Two steps are recommended to ensure the usability of OmicsUnivariateStats() function with any matrix:
+
+#### 1. unity-based normalization
+
+mat_Ubased_norm <- (mat - rep(colMins(mat),
+                              rep.int(nrow(mat),
+                                      ncol(mat)))) / (rep(colMaxs(mat),
+                                                          rep.int(nrow(mat),
+                                                                  ncol(mat))) - rep(colMins(mat),
+                                                                                    rep.int(nrow(mat),
+                                                                                            ncol(mat))))
+
+#### 2. zero replacement by small values
+
+mat_Ubased_norm[which(mat_Ubased_norm == 0)] <- 0.0000000000001
 
 test_OUS <- OmicsUnivariateStats(Factor1 = Factor1_eg)
 
@@ -101,4 +117,7 @@ test_Km <- KmeansPlus(DataDir = distribution_test_mat(nrow_x = 20, n_random_dist
 PlusPCA(Km = KmeansPlus())
 
 ```
+
+The recommended transformations are meant to cope with the intrinsic limitations of the different GLM families that are parametrized
+
 
