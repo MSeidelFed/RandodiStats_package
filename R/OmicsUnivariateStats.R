@@ -15,7 +15,7 @@
 OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_mat()),
                                  Factor1,
                                  Factor2 = NULL,
-                                 Contrast = T,
+                                 Contrast = F,
                                  ReturnTukeyPlots = T) {
   
   ## functions needed
