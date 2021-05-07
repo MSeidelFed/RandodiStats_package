@@ -22,15 +22,15 @@ Variables2Shapes <- function(Distribution_test_mat = distribution_test_mat(class
 
   if (class(Distribution_test_mat) == "matrix") {
 
-    SKEW <- vector(mode = "list", length = dim(Distribution_test_mat)[1])
+    SKEW <- vector(mode = "list", length = dim(Distribution_test_mat)[2])
 
-    KURT <- vector(mode = "list", length = dim(Distribution_test_mat)[1])
+    KURT <- vector(mode = "list", length = dim(Distribution_test_mat)[2])
 
     for (i in 1:dim(Distribution_test_mat)[2]) {
 
-      SKEW[[i]]  <- descdist(as.numeric(Distribution_test_mat[,i]), graph = F)$skewness
+      SKEW[[i]]  <- descdist(as.numeric(na.omit(Distribution_test_mat[,i])), graph = F)$skewness
 
-      KURT[[i]]  <- descdist(as.numeric(Distribution_test_mat[,i]), graph = F)$kurtosis
+      KURT[[i]]  <- descdist(as.numeric(na.omit(Distribution_test_mat[,i])), graph = F)$kurtosis
 
     }
 
