@@ -163,7 +163,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
   
   TukeyHSD_info <- matrix(NA,
                           nrow = dim(class_comparison_mat)[2],
-                          ncol = length(levels(Factor1))*length(levels(Factor2)))
+                          ncol = length(levels(Levene_factor)))
 
   count = 0
   
@@ -226,24 +226,10 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                               bootstrap = F)[["p.value"]] > 0.05 &
                   shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
       
-      if(show_condition(glm(Formula, regfamily[i])) == "error") {
-        
-        No_Regressors <- (length(levels(Factor1))-1)*(length(levels(Factor2))-1)
-        
-        test <- c(summary(glm(Formula, regfamily[i],
-                      start = c(1, rep(0, No_Regressors-1))))$coef[1:dim(summary(glm(Formula,
-                                                                                    regfamily[i],
-                                                                                    start = c(1, rep(0, No_Regressors-1))))$coef)[1],
-                                                  "Pr(>|t|)"],"Heteroscedastic & Parametric")
-        
-      } else {
-        
-        test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
+      test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
                                                                              regfamily[i]))$coef)[1],
                                                            "Pr(>|t|)"],
                   "Homoscedastic & Non-parametric")
-        
-      }
 
     } else if (levene.test(y = class_comparison_mat[,i],
                               group = Levene_factor,
