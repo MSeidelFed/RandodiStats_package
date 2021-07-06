@@ -24,8 +24,8 @@ testing_distributions <- function(Distribution_test_mat = distribution_test_mat(
                                colMeans(distribution_mat[5001:6000,]),
                                colMeans(distribution_mat[6001:7000,]))
 
-  dist_mat <- pointDistance(p1 = protein_coords,
-                            p2 = distribution_coords, lonlat = F, allpairs = T)
+  dist_mat <- t(as.matrix(pointDistance(p1 = protein_coords,
+                                        p2 = distribution_coords, lonlat = F, allpairs = T)))
 
   Family_selection_GLM_R <- cbind(
     Family = c("gamma","logis","beta","normal","binomial","poisson","exponential"),
