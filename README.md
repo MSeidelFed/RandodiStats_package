@@ -63,6 +63,7 @@ library(plotrix)
 library(cluster)
 library(multcompView)
 library(arrangements)
+library(pcaMethods)
 ```
 
 
