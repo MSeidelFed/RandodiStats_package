@@ -62,6 +62,7 @@ library(ggfortify)
 library(plotrix)
 library(cluster)
 library(multcompView)
+library(arrangements)
 ```
 
 
