@@ -86,22 +86,6 @@ Variables2Shapes()
 Factor1_eg <- as.factor(c(rep("RED", 200), rep("GREEN", 200), rep("BLACK", 200),
                           rep("WHITE", 200), rep("YELLOW", 200)))
                           
-### Two steps are recommended to ensure the usability of OmicsUnivariateStats() function with any matrix:
-
-#### 1. unity-based normalization
-
-mat_Ubased_norm <- (mat - rep(colMins(mat, na.rm = T),
-                              rep.int(nrow(mat),
-                                      ncol(mat)))) / (rep(colMaxs(mat, na.rm = T),
-                                                          rep.int(nrow(mat),
-                                                                  ncol(mat))) - rep(colMins(mat, na.rm = T),
-                                                                                    rep.int(nrow(mat),
-                                                                                            ncol(mat))))
-
-#### 2. zero replacement by small values
-
-mat_Ubased_norm[which(mat_Ubased_norm == 0)] <- 0.0000000000001
-
 test_OUS <- OmicsUnivariateStats(Factor1 = Factor1_eg)
 
 ### run in the console, the function is interactive.
