@@ -16,6 +16,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                                  Factor1,
                                  Factor2 = NULL,
                                  Contrast = F,
+                                 TukeyReturns = c("MeanComparisons", "Letters"),
                                  ReturnTukeyPlots = T,
                                  marginsTukey = c(6,12,3,3)) {
   
@@ -174,9 +175,23 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                      ncol = length(c(glm(Formula)[["coefficients"]],
                                      "Homoscedastic & Parametric")))
   
-  TukeyHSD_info <- matrix(NA,
-                          nrow = dim(class_comparison_mat)[2],
-                          ncol = length(levels(Levene_factor)))
+  if(TukeyReturns == "Letters") {
+    
+    TukeyHSD_info <- matrix(NA,
+                            nrow = dim(class_comparison_mat)[2],
+                            ncol = length(levels(Levene_factor)))
+    
+  } else if (TukeyReturns == "MeanComparisons"){
+    
+    TukeyHSD_info <- matrix(NA,
+                            nrow = dim(class_comparison_mat)[2],
+                            ncol = dim(combinations(levels(Levene_factor), k = 2))[1])
+    
+  } else {
+    
+    stop("ERROR: set valid TukeyReturns in the function call")
+    
+  }
   
   count = 0
   
@@ -200,9 +215,20 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
       
       return_letters <- TukeyCustomized(variable = class_comparison_mat[,i],
                                         factor = as.factor(Levene_factor),
-                                        MainTitle = colnames(class_comparison_mat)[i])
+                                        MainTitle = colnames(class_comparison_mat)[i], 
+                                        returnObject = TukeyReturns)
       
-      TukeyHSD_info[i,] <- t(return_letters)[1,]
+      if (TukeyReturns == "Letters") {
+        
+        TukeyHSD_info[i,] <- t(return_letters)[1,]
+        
+      } else if (TukeyReturns == "MeanComparisons") {
+        
+        TukeyHSD_info[i,] <- return_letters
+        
+      }
+      
+      
       
     }
     
@@ -293,6 +319,18 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                                FDR_adjustment,
                                TukeyHSD_info)
     
+    if (TukeyReturns == "Letters") {
+      
+      namesTukey <- t(return_letters)[2,]
+      
+    } else if (TukeyReturns == "MeanComparisons") {
+      
+      namesTukey <- names(return_letters)
+      
+    }
+    
+    
+    
     colnames(adjusted_test_out) <-c(paste(colnames(test_out)[-length(colnames(test_out))],
                                           "P values",
                                           sep = "_"),
@@ -301,7 +339,9 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                                     paste(colnames(test_out)[-length(colnames(test_out))],
                                           "Q values",
                                           sep = "_"),
-                                    t(return_letters)[2,])
+                                    paste0(rep("TukeyHSD", length(namesTukey)), "_", namesTukey))
+                                    
+                                    
     
     
     
