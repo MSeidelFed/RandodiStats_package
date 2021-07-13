@@ -18,7 +18,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                                  Contrast = F,
                                  TukeyReturns = c("MeanComparisons", "Letters"),
                                  ReturnTukeyPlots = T,
-                                 marginsTukey = c(6,12,3,3)) {
+                                 marginsTukey = c(6,12,3,3),
+                                 returnObject = c("class_comparison_mat", "OmicsTests")) {
   
   ## functions needed
   
@@ -117,7 +118,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     
     min_treatment_sd[i] <- min(treatments)
     
-    if (min_treatment_sd[i] < 3 | treatment_length < 4) {
+    if (min_treatment_sd[i] < 3 | treatment_length < length(levels(Levene_factor))) {
       NA_remover <- c(NA_remover, i)
     }
     
@@ -362,8 +363,19 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     
   }
   
-  
-  
-  return(adjusted_test_out)
+  if (returnObject == "class_comparison_mat") {
+    
+    return(class_comparison_mat)
+    
+  } else if (returnObject == "OmicsTests") {
+    
+    return(adjusted_test_out)
+     
+  } else {
+    
+    stop("ERROR: input a valid return object in the function call")
+    
+  }
+
   
 }
