@@ -59,7 +59,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     FactorNo <- 1
     
     Formula = class_comparison_mat[,i] ~ Factor1
-    Levene_factor = Factor1
+    Levene_factor = as.factor(Factor1)
     
   }
   
