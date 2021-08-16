@@ -20,7 +20,7 @@ Variables2Shapes <- function(Distribution_test_mat = distribution_test_mat(class
 
   ### main
 
-  if (class(Distribution_test_mat) == "matrix") {
+  if (class(Distribution_test_mat)[1] == "matrix") {
 
     SKEW <- vector(mode = "list", length = dim(Distribution_test_mat)[2])
 
@@ -38,7 +38,7 @@ Variables2Shapes <- function(Distribution_test_mat = distribution_test_mat(class
                                          kurtosis = list2df(KURT)))
 
 
-  } else if (class(Distribution_test_mat) == "list") {
+  } else if (class(Distribution_test_mat)[1] == "list") {
 
     SKEW <- vector(mode = "list", length = length(Distribution_test_mat))
 
