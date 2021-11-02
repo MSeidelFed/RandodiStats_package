@@ -11,8 +11,6 @@
 #' @export
 
 
-
-
 TukeyCustomized <- function(variable,
                             factor,
                             conf.level = 0.95,
