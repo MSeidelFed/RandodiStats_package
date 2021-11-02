@@ -2,9 +2,11 @@
 #'
 #' This function allows you to rationalize the clustering method selected.
 #' @param variable is a numeric vector outlining a response variable.
-#' @param factor is a factor type of vector of the same lenght as variable.
+#' @param factor is a factor type of vector of the same length as variable.
 #' @param conf.level Defaults to 0.95 CI.
 #' @param MainTitle allows to insert a title for the returned plot.
+#' @param ylabTukeys defaults to NULL. Character vector that defines the text on y-axes from Tukey HSD plots.
+#' @param xlabTukeys defaults to NULL. Character vector that defines the text on x-axes from Tukey HSD plots.
 #' @keywords class discovery, TukeyHSD
 #' @export
 
@@ -15,7 +17,9 @@ TukeyCustomized <- function(variable,
                             factor,
                             conf.level = 0.95,
                             MainTitle = "",
-                            returnObject = c("Letters", "MeanComparisons")) {
+                            returnObject = c("Letters", "MeanComparisons"),
+                            ylabTukeys = NULL,
+                            xlabTukeys = NULL) {
   
   
   if (class(variable) == "numeric" & class(factor) == "factor") {
@@ -103,8 +107,8 @@ TukeyCustomized <- function(variable,
   a=boxplot(data$value ~ data$treatment,
             ylim = ylims,
             col = my_colors[as.numeric(LABELS[,1])],
-            ylab = NULL,
-            xlab = NULL,
+            ylab = ylabTukeys,
+            xlab = xlabTukeys,
             main = MainTitle, las = 2, cex.axis = 1)
   
   # I want to write the letter over each box. Over is how high I want to write it.
