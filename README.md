@@ -64,6 +64,7 @@ library(cluster)
 library(multcompView)
 library(arrangements)
 library(pcaMethods)
+library(viridis)
 ```
 
 
