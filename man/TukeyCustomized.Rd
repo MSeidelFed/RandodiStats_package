@@ -4,16 +4,28 @@
 \alias{TukeyCustomized}
 \title{A Tukey HSD visual representation}
 \usage{
-TukeyCustomized(variable, factor, conf.level = 0.95, MainTitle = "")
+TukeyCustomized(
+  variable,
+  factor,
+  conf.level = 0.95,
+  MainTitle = "",
+  returnObject = c("Letters", "MeanComparisons"),
+  ylabTukeys = NULL,
+  xlabTukeys = NULL
+)
 }
 \arguments{
 \item{variable}{is a numeric vector outlining a response variable.}
 
-\item{factor}{is a factor type of vector of the same lenght as variable.}
+\item{factor}{is a factor type of vector of the same length as variable.}
 
 \item{conf.level}{Defaults to 0.95 CI.}
 
 \item{MainTitle}{allows to insert a title for the returned plot.}
+
+\item{ylabTukeys}{defaults to NULL. Character vector that defines the text on y-axes from Tukey HSD plots.}
+
+\item{xlabTukeys}{defaults to NULL. Character vector that defines the text on x-axes from Tukey HSD plots.}
 }
 \description{
 This function allows you to rationalize the clustering method selected.

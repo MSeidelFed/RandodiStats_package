@@ -8,7 +8,11 @@ OmicsUnivariateStats(
   class_comparison_mat = abs(distribution_test_mat()),
   Factor1,
   Factor2 = NULL,
-  Contrast = T
+  Contrast = F,
+  TukeyReturns = c("MeanComparisons", "Letters"),
+  ReturnTukeyPlots = T,
+  marginsTukey = c(6, 12, 3, 3),
+  returnObject = c("class_comparison_mat", "OmicsTests")
 )
 }
 \arguments{

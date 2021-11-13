@@ -6,9 +6,11 @@
 \usage{
 PlusPCA(
   inMat = distribution_test_mat(),
-  Km,
+  Km = NULL,
   returnValuesPlot = T,
-  returnTreatmentValues = T
+  returnTreatmentValues = T,
+  pamClust = T,
+  Kpam
 )
 }
 \arguments{
