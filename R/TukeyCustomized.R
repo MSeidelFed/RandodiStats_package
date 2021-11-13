@@ -43,7 +43,7 @@ TukeyCustomized <- function(variable,
   abscissa <- c(min(c(TUKEY$`data$treatment`[,"lwr"], 0)), max(c(TUKEY$`data$treatment`[,"upr"], 0)))
   
   # Tukey test representation :
-  plot(TUKEY , las=1 , col="brown", xlim = abscissa)
+  plot(TUKEY, las=1 , col="brown", xlim = abscissa)
   
   
   # I need to group the treatments that are not different from each other together.
@@ -81,14 +81,7 @@ TukeyCustomized <- function(variable,
   
   
   # A panel of colors to draw each group with the same color :
-  my_colors=c( rgb(143,199,74,maxColorValue = 255),
-               rgb(242,104,34,maxColorValue = 255),
-               rgb(111,145,202,maxColorValue = 255),
-               rgb(254,188,18,maxColorValue = 255),
-               rgb(74,132,54,maxColorValue = 255),
-               rgb(236,33,39,maxColorValue = 255),
-               rgb(165,103,40,maxColorValue = 255))
-  
+  my_colors = rainbow(n = length(unique(LABELS[,"Letters"])))
   
   
   if (max(na.omit(data$value)) > 0) {
