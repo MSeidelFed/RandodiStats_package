@@ -28,9 +28,9 @@ Variables2Shapes <- function(Distribution_test_mat = distribution_test_mat(class
 
     for (i in 1:dim(Distribution_test_mat)[2]) {
 
-      SKEW[[i]]  <- descdist(as.numeric(na.omit(Distribution_test_mat[,i])), graph = F)$skewness
+      SKEW[[i]]  <- fitdistrplus::descdist(as.numeric(na.omit(Distribution_test_mat[,i])), graph = F)$skewness
 
-      KURT[[i]]  <- descdist(as.numeric(na.omit(Distribution_test_mat[,i])), graph = F)$kurtosis
+      KURT[[i]]  <- fitdistrplus::descdist(as.numeric(na.omit(Distribution_test_mat[,i])), graph = F)$kurtosis
 
     }
 
@@ -46,9 +46,9 @@ Variables2Shapes <- function(Distribution_test_mat = distribution_test_mat(class
 
     for (i in 1:length(Distribution_test_mat)) {
 
-      SKEW[[i]]  <- descdist(unlist(Distribution_test_mat[i]), graph = F)$skewness
+      SKEW[[i]]  <- fitdistrplus::descdist(unlist(Distribution_test_mat[i]), graph = F)$skewness
 
-      KURT[[i]]  <- descdist(unlist(Distribution_test_mat[i]), graph = F)$kurtosis
+      KURT[[i]]  <- fitdistrplus::descdist(unlist(Distribution_test_mat[i]), graph = F)$kurtosis
 
     }
 
