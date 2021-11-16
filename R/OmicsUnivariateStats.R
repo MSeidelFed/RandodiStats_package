@@ -186,7 +186,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     
     TukeyHSD_info <- matrix(NA,
                             nrow = dim(class_comparison_mat)[2],
-                            ncol = dim(combinations(levels(Levene_factor), k = 2))[1])
+                            ncol = dim(arrangements::combinations(levels(Levene_factor), k = 2))[1])
     
   } else {
     
