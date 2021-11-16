@@ -71,11 +71,11 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
   
   mat <- class_comparison_mat
   
-  mat_Ubased_norm <- (mat - rep(colMins(mat, na.rm = T),
+  mat_Ubased_norm <- (mat - rep(matrixStats::colMins(mat, na.rm = T),
                                 rep.int(nrow(mat),
-                                        ncol(mat)))) / (rep(colMaxs(mat, na.rm = T),
+                                        ncol(mat)))) / (rep(matrixStats::colMaxs(mat, na.rm = T),
                                                             rep.int(nrow(mat),
-                                                                    ncol(mat))) - rep(colMins(mat, na.rm = T),
+                                                                    ncol(mat))) - rep(matrixStats::colMins(mat, na.rm = T),
                                                                                       rep.int(nrow(mat),
                                                                                               ncol(mat))))
   
@@ -151,7 +151,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
   
   ### removing features with global null standard deviation
   
-  test_global_sd <- which(rowSds(as.matrix(class_comparison_mat)) == 0)
+  test_global_sd <- which(matrixStats::rowSds(as.matrix(class_comparison_mat)) == 0)
   
   if (length(test_global_sd) > 0) {
     
