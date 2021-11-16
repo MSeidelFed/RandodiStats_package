@@ -235,7 +235,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     
     print(c(regfamily[i], "Column Number", count))
     
-    if (levene.test(y = class_comparison_mat[,i],
+    if (lawstat::levene.test(y = class_comparison_mat[,i],
                     group = Levene_factor,
                     location = "median",
                     bootstrap = F)[["p.value"]] > 0.05 &
@@ -248,7 +248,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                 "Homoscedastic & Parametric")
       
       
-    } else if (levene.test(y = class_comparison_mat[,i],
+    } else if (lawstat::levene.test(y = class_comparison_mat[,i],
                            group = Levene_factor,
                            location = "median",
                            bootstrap = F)[["p.value"]] < 0.05 &
@@ -260,7 +260,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                 "Heteroscedastic & Parametric")
       
       
-    } else if (levene.test(y = class_comparison_mat[,i],
+    } else if (lawstat::levene.test(y = class_comparison_mat[,i],
                            group = Levene_factor,
                            location = "median",
                            bootstrap = F)[["p.value"]] > 0.05 &
@@ -271,7 +271,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
                                                          "Pr(>|t|)"],
                 "Homoscedastic & Non-parametric")
       
-    } else if (levene.test(y = class_comparison_mat[,i],
+    } else if (lawstat::levene.test(y = class_comparison_mat[,i],
                            group = Levene_factor,
                            location = "median",
                            bootstrap = F)[["p.value"]] < 0.05 &
