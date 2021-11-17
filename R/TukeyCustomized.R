@@ -66,7 +66,7 @@ TukeyCustomized <- function(variable,
       
     } else {
       
-      Tukey.labels <- data.frame(multcompLetters(Tukey.levels)['Letters'])
+      Tukey.labels <- data.frame(multcompView::multcompLetters(Tukey.levels)['Letters'])
       
     }
     
