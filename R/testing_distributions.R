@@ -7,12 +7,12 @@
 #' @examples
 #' test_mat_distributions <- testing_distributions()
 
-testing_distributions <- function(Distribution_test_mat = distribution_test_mat()) {
+testing_distributions <- function(Distribution_test_mat = RandoDiStats::distribution_test_mat()) {
 
-  protein_coords <- as.data.frame(x = Variables2Shapes(Distribution_test_mat),
+  protein_coords <- as.data.frame(x = RandoDiStats::Variables2Shapes(Distribution_test_mat),
                                   row.names = colnames(Distribution_test_mat))
 
-  distribution_mat <- Variables2Shapes(distribution_test_mat())
+  distribution_mat <- RandoDiStats::Variables2Shapes(distribution_test_mat())
 
   ### this object must be the kurtosis and square of skewness of the distributions
 
