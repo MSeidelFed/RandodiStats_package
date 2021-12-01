@@ -12,7 +12,7 @@
 #' test_OUS <- OmicsUnivariateStats(Factor1 = Factor1_eg)
 #' ...
 
-OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_mat()),
+OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distribution_test_mat()),
                                  Factor1,
                                  Factor2 = NULL,
                                  Contrast = F,
@@ -163,7 +163,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
   
   ## defining regression families
   
-  regfamily <- testing_distributions(Distribution_test_mat = class_comparison_mat)
+  regfamily <- RandoDiStats::testing_distributions(Distribution_test_mat = class_comparison_mat)
   
   ## for loop for tests
   
@@ -214,10 +214,10 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(distribution_test_ma
     
     if(ReturnTukeyPlots == T) {
       
-      return_letters <- TukeyCustomized(variable = class_comparison_mat[,i],
-                                        factor = as.factor(Levene_factor),
-                                        MainTitle = colnames(class_comparison_mat)[i], 
-                                        returnObject = TukeyReturns)
+      return_letters <- RandoDiStats::TukeyCustomized(variable = class_comparison_mat[,i],
+                                                      factor = as.factor(Levene_factor),
+                                                      MainTitle = colnames(class_comparison_mat)[i], 
+                                                      returnObject = TukeyReturns)
       
       if (TukeyReturns == "Letters") {
         
