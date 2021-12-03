@@ -163,7 +163,17 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   ## defining regression families
   
+  regfamily <- c()
+  
   regfamily <- RandoDiStats::testing_distributions(Distribution_test_mat = class_comparison_mat)
+  
+  ### while loop to prevent empty GLM family error
+  
+  while (length(regfamily) == 0) {
+  
+    regfamily <- RandoDiStats::testing_distributions(Distribution_test_mat = class_comparison_mat)
+  
+  }
   
   ## for loop for tests
   
