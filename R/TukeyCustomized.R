@@ -97,7 +97,7 @@ TukeyCustomized <- function(variable,
   # Draw the basic boxplot
   a=boxplot(data$value ~ data$treatment,
             ylim = ylims,
-            col = my_colors[as.numeric(LABELS[,1])],
+            col = my_colors[as.numeric(as.factor(LABELS[,1]))],
             ylab = ylabTukeys,
             xlab = xlabTukeys,
             main = MainTitle, las = 2, cex.axis = 1)
@@ -107,7 +107,7 @@ TukeyCustomized <- function(variable,
   
   #Add the labels
   text( c(1:nlevels(data$treatment)) , a$stats[nrow(a$stats),]+over ,
-        LABELS[,1]  , col=my_colors[as.numeric(LABELS[,1])] )
+        LABELS[,1]  , col=my_colors[as.numeric(as.factor(LABELS[,1]))] )
   
   if(returnObject == "Letters") {
     
