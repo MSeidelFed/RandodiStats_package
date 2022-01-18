@@ -33,8 +33,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   ## main
   
   
-  if (dim(class_comparison_mat)[1] == dim(distribution_test_mat())[1] &
-      dim(class_comparison_mat)[2] == dim(distribution_test_mat())[2]) {
+  if (dim(class_comparison_mat)[1] == dim(RandoDiStats::distribution_test_mat())[1] &
+      dim(class_comparison_mat)[2] == dim(RandoDiStats::distribution_test_mat())[2]) {
     
     class_comparison_mat[which(class_comparison_mat == 0)] <- 0.0001
     
