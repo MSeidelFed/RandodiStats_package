@@ -2,7 +2,7 @@
 % Please edit documentation in R/OmicsUnivariateStats.R
 \name{OmicsUnivariateStats}
 \alias{OmicsUnivariateStats}
-\title{A Random distributions Function}
+\title{A Random distributions Function to perform univariate statistical inference}
 \usage{
 OmicsUnivariateStats(
   class_comparison_mat = abs(RandoDiStats::distribution_test_mat()),
@@ -11,6 +11,7 @@ OmicsUnivariateStats(
   Contrast = F,
   TukeyReturns = c("MeanComparisons", "Letters"),
   ReturnTukeyPlots = T,
+  TukeyPDFName = "test",
   marginsTukey = c(6, 12, 3, 3),
   returnObject = c("class_comparison_mat", "OmicsTests")
 )
@@ -21,6 +22,16 @@ OmicsUnivariateStats(
 \item{Factor2}{defaults to NULL.}
 
 \item{Contrast}{defaults to TRUE.}
+
+\item{TukeyReturns}{Tukey HSD can return either "MeanComparisons" or "Letters".}
+
+\item{ReturnTukeyPlots}{defaults to TRUE, returns a PDF with the plots.}
+
+\item{TukeyPDFName}{defaults to "test".}
+
+\item{marginsTukey}{margins of the Tukey HSD plots}
+
+\item{returnObject}{returns either the results from the "OmicsTests" or the cropped tested "class_comparison_mat"}
 
 \item{Factor1.}{Needs to be defined}
 }

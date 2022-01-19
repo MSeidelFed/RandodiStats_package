@@ -1,10 +1,15 @@
-#' A Random distributions Function
+#' A Random distributions Function to perform univariate statistical inference
 #'
 #' This function allows you to test response variables using a generalized linear model with one or two factors and multiple levels per factor, i.e., multiple regressors, customizing the family of regression for each test according to the response variable distribution.
 #' @param class_comparison_mat Defaults to distribution_test_mat().
 #' @param Factor1. Needs to be defined
 #' @param Factor2 defaults to NULL.
 #' @param Contrast defaults to TRUE.
+#' @param TukeyReturns Tukey HSD can return either "MeanComparisons" or "Letters".
+#' @param ReturnTukeyPlots defaults to TRUE, returns a PDF with the plots.
+#' @param TukeyPDFName defaults to "test".
+#' @param marginsTukey margins of the Tukey HSD plots
+#' @param returnObject returns either the results from the "OmicsTests" or the cropped tested "class_comparison_mat"
 #' @keywords Univariate Statistics
 #' @export
 #' @examples
@@ -18,6 +23,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                  Contrast = F,
                                  TukeyReturns = c("MeanComparisons", "Letters"),
                                  ReturnTukeyPlots = T,
+                                 TukeyPDFName = "test",
                                  marginsTukey = c(6,12,3,3),
                                  returnObject = c("class_comparison_mat", "OmicsTests")) {
   
@@ -208,7 +214,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   if(ReturnTukeyPlots == T) {
     
-    pdf("TukeyHSD_Plots.pdf")
+    pdf(paste0(TukeyPDFName, "_", "TukeyHSD.pdf"))
     
     par(mar = marginsTukey)
     
