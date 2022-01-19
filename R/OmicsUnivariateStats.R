@@ -251,10 +251,14 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
     print(c(regfamily[i], "Column Number", count))
     
-    if (lawstat::levene.test(y = class_comparison_mat[,i],
-                    group = Levene_factor,
-                    location = "median",
-                    bootstrap = F)[["p.value"]] > 0.05 &
+    NA_free_var <- class_comparison_mat[,i][!is.na(class_comparison_mat[,i])]
+    
+    NA_free_factor <- Levene_factor[!is.na(class_comparison_mat[,i])]
+    
+    if (lawstat::levene.test(y = NA_free_var,
+                             group = NA_free_factor,
+                             location = "median",
+                             bootstrap = F)[["p.value"]] > 0.05 &
         shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
       
       
@@ -264,10 +268,10 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                 "Homoscedastic & Parametric")
       
       
-    } else if (lawstat::levene.test(y = class_comparison_mat[,i],
-                           group = Levene_factor,
-                           location = "median",
-                           bootstrap = F)[["p.value"]] < 0.05 &
+    } else if (lawstat::levene.test(y = NA_free_var,
+                                    group = NA_free_factor,
+                                    location = "median",
+                                    bootstrap = F)[["p.value"]] < 0.05 &
                shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
       
       test <- c(summary(lm(Formula))$coef[1:dim(summary(glm(Formula,
@@ -276,10 +280,10 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                 "Heteroscedastic & Parametric")
       
       
-    } else if (lawstat::levene.test(y = class_comparison_mat[,i],
-                           group = Levene_factor,
-                           location = "median",
-                           bootstrap = F)[["p.value"]] > 0.05 &
+    } else if (lawstat::levene.test(y = NA_free_var,
+                                    group = NA_free_factor,
+                                    location = "median",
+                                    bootstrap = F)[["p.value"]] > 0.05 &
                shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
       
       test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
@@ -287,10 +291,10 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                                          "Pr(>|t|)"],
                 "Homoscedastic & Non-parametric")
       
-    } else if (lawstat::levene.test(y = class_comparison_mat[,i],
-                           group = Levene_factor,
-                           location = "median",
-                           bootstrap = F)[["p.value"]] < 0.05 &
+    } else if (lawstat::levene.test(y = NA_free_var,
+                                    group = NA_free_factor,
+                                    location = "median",
+                                    bootstrap = F)[["p.value"]] < 0.05 &
                shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
       
       test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
