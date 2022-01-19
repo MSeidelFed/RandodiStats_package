@@ -5,7 +5,8 @@
 \title{A Random distributions Function}
 \usage{
 Variables2Shapes(
-  Distribution_test_mat = distribution_test_mat(class_method = "discovery")
+  Distribution_test_mat = RandoDiStats::distribution_test_mat(class_method =
+    "discovery")
 )
 }
 \arguments{

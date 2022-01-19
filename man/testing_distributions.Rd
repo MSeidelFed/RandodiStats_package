@@ -4,7 +4,9 @@
 \alias{testing_distributions}
 \title{A Random distributions Function}
 \usage{
-testing_distributions(Distribution_test_mat = distribution_test_mat())
+testing_distributions(
+  Distribution_test_mat = RandoDiStats::distribution_test_mat()
+)
 }
 \arguments{
 \item{Distribution_test_mat}{Defaults to a matrix built with distribution_test_mat().}

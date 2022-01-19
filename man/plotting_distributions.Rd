@@ -5,7 +5,7 @@
 \title{A Random distributions Function}
 \usage{
 plotting_distributions(
-  test_mat = distribution_test_mat(class_method = "discovery"),
+  test_mat = RandoDiStats::distribution_test_mat(class_method = "discovery"),
   vector_colors = "black",
   transparency = 90,
   variable_name = "test_mat",

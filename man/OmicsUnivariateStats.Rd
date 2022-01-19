@@ -5,7 +5,7 @@
 \title{A Random distributions Function}
 \usage{
 OmicsUnivariateStats(
-  class_comparison_mat = abs(distribution_test_mat()),
+  class_comparison_mat = abs(RandoDiStats::distribution_test_mat()),
   Factor1,
   Factor2 = NULL,
   Contrast = F,
