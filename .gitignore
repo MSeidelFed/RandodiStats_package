@@ -2,3 +2,5 @@ Document.Rproj
 Document_Instructions.txt
 .Rproj.user
 .Rbuildignore
+.RData
+.Rhistory
