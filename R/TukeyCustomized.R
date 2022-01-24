@@ -81,7 +81,16 @@ TukeyCustomized <- function(variable,
   
   
   # A panel of colors to draw each group with the same color :
-  my_colors = rainbow(n = length(unique(LABELS[,"Letters"])))
+  my_colors2 = cbind(Colors = rainbow(LABELS[,"Letters"]))
+  rownames(my_colors2) <- as.character(unique(LABELS[,"Letters"]))
+  
+  # integrating the colors into the LABELS object
+  
+   LABELS = cbind(LABELS, Colors = my_colors2[as.character(LABELS$Letters),])
+  
+  # Reordering data$treatment with the LABELS row order to have the treatments with the correct colors
+  
+  data$treatment <- factor(data$treatment, levels = rownames(LABELS))
   
   
   if (max(na.omit(data$value)) > 0) {
@@ -97,7 +106,7 @@ TukeyCustomized <- function(variable,
   # Draw the basic boxplot
   a=boxplot(data$value ~ data$treatment,
             ylim = ylims,
-            col = my_colors[as.numeric(as.factor(LABELS[,1]))],
+            col = as.character(LABELS$Colors),
             ylab = ylabTukeys,
             xlab = xlabTukeys,
             main = MainTitle, las = 2, cex.axis = 1)
@@ -106,8 +115,8 @@ TukeyCustomized <- function(variable,
   over=0.1*max( a$stats[nrow(a$stats),] )
   
   #Add the labels
-  text( c(1:nlevels(data$treatment)) , a$stats[nrow(a$stats),]+over ,
-        LABELS[,1]  , col=my_colors[as.numeric(as.factor(LABELS[,1]))] )
+  text(c(1:nlevels(data$treatment)), a$stats[nrow(a$stats),]+over,
+       LABELS[,1], col = as.character(LABELS$Colors))
   
   if(returnObject == "Letters") {
     
