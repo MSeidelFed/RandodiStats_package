@@ -81,7 +81,7 @@ TukeyCustomized <- function(variable,
   
   
   # A panel of colors to draw each group with the same color :
-  my_colors2 = cbind(Colors = rainbow(LABELS[,"Letters"]))
+  my_colors2 = cbind(Colors = rainbow(n = length(as.character(unique(LABELS[,"Letters"])))))
   rownames(my_colors2) <- as.character(unique(LABELS[,"Letters"]))
   
   # integrating the colors into the LABELS object
