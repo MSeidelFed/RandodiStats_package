@@ -99,7 +99,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   if (length(indexes_NAs) > 0) {
     
-    cat("Features with only NAs: ", "\n", colnames(class_comparison_mat[,indexes_NAs]))
+    cat("Features with only NAs: ", "\n", colnames(class_comparison_mat)[indexes_NAs])
     cat("...", "\n")
     
     class_comparison_mat = as.matrix(class_comparison_mat[,-c(indexes_NAs)])
