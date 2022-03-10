@@ -93,24 +93,24 @@ ClustPlus <- function(mat = distribution_test_mat(nrow_x = 50,
 
   ### treatments
 
-  HCA_boot_t <- pvclust(t(mat),
+  HCA_boot_t <- pvclust::pvclust(t(mat),
                         method.hclust = clust_method_t,
                         method.dist = clust_distance_t,
                         nboot = nboots)
 
-  table_t <- pvpick(HCA_boot_t, alpha = AU_p_value)
+  table_t <- pvclust::pvpick(HCA_boot_t, alpha = AU_p_value)
 
   clusters_t <- sapply(1:length(as.matrix(table_t$clusters)),
                        function(j) as.matrix(table_t$clusters)[[j]][1:300])
 
   ### variables
 
-  HCA_boot_m <- pvclust(mat,
+  HCA_boot_m <- pvclust::pvclust(mat,
                         method.hclust = clust_method_M,
                         method.dist = clust_distance_M,
                         nboot = nboots)
 
-  table_m <- pvpick(HCA_boot_m, alpha = AU_p_value)
+  table_m <- pvclust::pvpick(HCA_boot_m, alpha = AU_p_value)
 
   clusters_m <- sapply(1:length(as.matrix(table_m$clusters)),
                      function(j) as.matrix(table_m$clusters)[[j]][1:300])
@@ -124,32 +124,32 @@ ClustPlus <- function(mat = distribution_test_mat(nrow_x = 50,
   par(mfrow=c(1,1))
 
   plot(HCA_boot_t)
-  pvrect(HCA_boot_t, alpha = AU_p_value)
+  pvclust::pvrect(HCA_boot_t, alpha = AU_p_value)
 
   plot(HCA_boot_m)
-  pvrect(HCA_boot_m, alpha = AU_p_value)
+  pvclust::pvrect(HCA_boot_m, alpha = AU_p_value)
 
-  seplot(HCA_boot_t)
+  pvclust::seplot(HCA_boot_t)
 
-  seplot(HCA_boot_m)
+  pvclust::seplot(HCA_boot_m)
 
   dev.off()
 
   }
 
-  if (class(clusters_t) == "list" & class(clusters_m) == "list") {
+  if (class(clusters_t)[1] == "list" & class(clusters_m)[1] == "list") {
 
     print("no significant clusters available")
 
-  } else if (class(clusters_t) == "matrix" & class(clusters_m) == "list") {
+  } else if (class(clusters_t)[1] == "matrix" & class(clusters_m)[1] == "list") {
 
     return(clusters_t)
 
-  } else if (class(clusters_t) == "list" & class(clusters_m) == "matrix") {
+  } else if (class(clusters_t)[1] == "list" & class(clusters_m)[1] == "matrix") {
 
     return(clusters_m)
 
-  } else if (class(clusters_t) == "matrix" & class(clusters_m) == "matrix") {
+  } else if (class(clusters_t)[1] == "matrix" & class(clusters_m)[1] == "matrix") {
 
     return(list(clusters_t, clusters_m))
 
