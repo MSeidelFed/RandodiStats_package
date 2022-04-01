@@ -87,7 +87,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   #### zero replacement by small values
   
-  mat_Ubased_norm[which(mat_Ubased_norm == 0)] <- 0.0000000000001
+  mat_Ubased_norm[which(mat_Ubased_norm == 0)] <- abs(rnorm(n = length(which(mat_Ubased_norm == 0)),
+                                                            mean = 0.0000000000001, sd = 0.0000000001))
   
   
   class_comparison_mat <- mat_Ubased_norm
