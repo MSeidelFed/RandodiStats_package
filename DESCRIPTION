@@ -9,11 +9,11 @@ Authors@R:
            comment = c(ORCID = "0000-0002-1410-2492"))
 Depends: R (>= 3.6.1), BiocGenerics (>= 0.1.12), Biobase (>= 2.5.5)
 Imports: 
-	fitdistrplus,
-	raster,
-	lawstat,
-	matrixStats,
-	tidyr,
+		fitdistrplus,
+		raster,
+		lawstat,
+		matrixStats,
+		tidyr,
         dendextend,
         pvclust,
         ComplexHeatmap,
@@ -27,6 +27,12 @@ Imports:
         arrangements,
         pcaMethods,
         viridis
+Suggests:
+		IsoCorrectoR,
+		BiocGenerics,
+		Biobase,
+		ComplexHeatmap,
+		pcaMethods
 Description: Class comparions, class discovery and class prediction stats.
 License: BSD_2_clause + file LICENSE
 Encoding: UTF-8

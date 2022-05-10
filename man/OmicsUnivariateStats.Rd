@@ -13,7 +13,7 @@ OmicsUnivariateStats(
   ReturnTukeyPlots = T,
   TukeyPDFName = "test",
   marginsTukey = c(6, 12, 3, 3),
-  returnObject = c("class_comparison_mat", "OmicsTests")
+  returnObject = c("OmicsTests", "class_comparison_mat")
 )
 }
 \arguments{
