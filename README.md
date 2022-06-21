@@ -5,6 +5,12 @@ Random distributions and their statistics
 
 It is necessary to install [Rtools](https://cran.r-project.org/bin/windows/Rtools/history.html) before starting. Make sure to install the appropriate version depending on your R version and add the Rtools directory to the system PATH (instructions for this can be found [here](https://datag.org/resources/documents/spring-2018/37-de-barros-installing-r-on-windows/file))
 
+or use the following code inside R studio.
+
+```{r}
+installr::install.Rtools()
+```
+
 ## Installation
 
 Install via "devtools"
