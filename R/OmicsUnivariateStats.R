@@ -38,7 +38,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   ## main
   
-  
+  #What is this exactly used for? Only execute if input matrix is distribution_test_mat?
   if (dim(class_comparison_mat)[1] == dim(RandoDiStats::distribution_test_mat())[1] &
       dim(class_comparison_mat)[2] == dim(RandoDiStats::distribution_test_mat())[2]) {
     
@@ -64,7 +64,9 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
     FactorNo <- 1
     
+    # This is an object of type formula
     Formula = class_comparison_mat[,i] ~ Factor1
+    # Levene factor in our case length 18, 6 levels
     Levene_factor = as.factor(Factor1)
     
   }
@@ -77,6 +79,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   mat <- class_comparison_mat
   
+  # Here each matrix value undergoes feature scaling (column wise). Values will end up being between 0 and 1.(Binomial and Quasibinomial) 
+  # NAs are preserved 
   mat_Ubased_norm <- (mat - rep(matrixStats::colMins(mat, na.rm = T),
                                 rep.int(nrow(mat),
                                         ncol(mat)))) / (rep(matrixStats::colMaxs(mat, na.rm = T),
@@ -87,6 +91,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   #### zero replacement by small values
   
+  # Here, zeros are replaced with very small values drawn from a normal distribution with given mean and standard deviation
+  # to mimic noise, as true metabolite levels of 0 do not occur in practice. Is the magnitude of noise always positive?
   mat_Ubased_norm[which(mat_Ubased_norm == 0)] <- abs(rnorm(n = length(which(mat_Ubased_norm == 0)),
                                                             mean = 0.0000000000001, sd = 0.0000000001))
   
@@ -96,6 +102,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   ## remove rows full of NAs
   
+  # Here, all columns (variables) that contain only NA's are identified and then removed. 
   indexes_NAs <- as.numeric(which(is.na(colMeans(class_comparison_mat, na.rm = T))))
   
   if (length(indexes_NAs) > 0) {
@@ -114,17 +121,21 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   min_treatment_sd <- c()
   NA_remover <- c()
   
+  # Loop over columns ...
   for (i in 1:dim(class_comparison_mat)[2]) {
-    
+    # mean of standard deviations for each treatment in column i. 
     mean_treatment_sd[i] <- mean(aggregate(Formula, FUN = sd)[,(FactorNo + 1)])
     
+    # Number of treatments for each level in column i
     treatments <- aggregate(Formula, FUN = length)[, 
                                                    (FactorNo + 1)]
-    
+    # Number of treatments in column i
     treatment_length <- length(treatments)
     
+    # Takes the min number of treatments among all the levels in column i
     min_treatment_sd[i] <- min(treatments)
     
+    # Treatment number smaller 3 -> remove column 
     if (min_treatment_sd[i] < 3 | treatment_length < length(levels(Levene_factor))) {
       NA_remover <- c(NA_remover, i)
     }
@@ -145,6 +156,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   #### null variance in treatments
   
+  # for mean_treatment_sd to be 0, the variance for all treatments must be 0
   null_sd_features <- colnames(class_comparison_mat[,which(mean_treatment_sd == 0)])
   
   if (length(null_sd_features) > 0) {
@@ -158,7 +170,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   ### removing features with global null standard deviation
   
-  test_global_sd <- which(matrixStats::rowSds(as.matrix(class_comparison_mat)) == 0)
+  # Here SD of rows (a particular treatment) are taken. Shouldn't it be SD of the columns (mass features)?
+  test_global_sd <- which(matrixStats::colSds(as.matrix(class_comparison_mat)) == 0)
   
   if (length(test_global_sd) > 0) {
     
@@ -172,10 +185,12 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   regfamily <- c()
   
+  # calling testing_distributions with input matrix, gives back a distribution for all columns (features)
   regfamily <- RandoDiStats::testing_distributions(Distribution_test_mat = class_comparison_mat)
   
   ### while loop to prevent empty GLM family error
   
+  # same as above, is this because testing_distributions sometimes does not give back a distribution? 
   while (length(regfamily) == 0) {
   
     regfamily <- RandoDiStats::testing_distributions(Distribution_test_mat = class_comparison_mat)
@@ -184,10 +199,11 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   ## for loop for tests
   
-  ### empty mat to store results
+  
   
   i = 1
   
+  # empty mat to store results of the analysis
   test_out <- matrix(NA,
                      nrow = dim(class_comparison_mat)[2],
                      ncol = length(c(glm(Formula)[["coefficients"]],
@@ -223,6 +239,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
   }
   
+  # loop over columns
   for (i in 1:dim(class_comparison_mat)[2]) {
     
     count = count + 1
@@ -231,6 +248,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
     if(ReturnTukeyPlots == T) {
       
+      # call TukeyCustomized on the i'th column, outputs a plot value~treatment 
       return_letters <- RandoDiStats::TukeyCustomized(variable = class_comparison_mat[,i],
                                                       factor = as.factor(Levene_factor),
                                                       MainTitle = colnames(class_comparison_mat)[i], 
@@ -252,10 +270,16 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
     print(c(regfamily[i], "Column Number", count))
     
+    # Removal of NA's in i'th column for variable and factor
     NA_free_var <- class_comparison_mat[,i][!is.na(class_comparison_mat[,i])]
     
     NA_free_factor <- Levene_factor[!is.na(class_comparison_mat[,i])]
     
+    # Here either a lm or a glm is build depending on the results of the Levene's and shapiro test.
+    # The intercept and the coefficients are stored in test. The intercept is always the control. 
+    # A significant p-value indicates, that the mean of the particular group differs from the mean of the control. 
+    
+    # Levene and Shapiro test. Here, homoscedastic and normally distributed. 
     if (lawstat::levene.test(y = NA_free_var,
                              group = NA_free_factor,
                              location = "median",
@@ -268,7 +292,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                           "Pr(>|t|)"],
                 "Homoscedastic & Parametric")
       
-      
+    # Levene and Shapiro test. Here, heteroscedastic and normally distributed  
     } else if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",
@@ -280,7 +304,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                           "Pr(>|t|)"],
                 "Heteroscedastic & Parametric")
       
-      
+    # Levene and Shapiro test. Here, homoscedastic and not normally distributed  
     } else if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",
@@ -292,6 +316,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                                          "Pr(>|t|)"],
                 "Homoscedastic & Non-parametric")
       
+    # Levene and Shapiro test. Here, heteroscedastic and not normally distributed  
     } else if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",

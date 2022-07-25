@@ -22,6 +22,7 @@ TukeyCustomized <- function(variable,
   
   if (class(variable) == "numeric" & class(factor) == "factor") {
     
+    # put together the variable and the facter as data.frame
     data <- cbind.data.frame(value = as.numeric(variable), treatment = as.factor(factor))
     
   } else {
@@ -32,12 +33,15 @@ TukeyCustomized <- function(variable,
   
   
   # What is the effect of the treatment on the value ?
+  # Same as: ANOVA = aov(data$value~data$treatment,data=data)
   model=lm(data$value ~ data$treatment)
   ANOVA=aov(model)
   
   # Tukey test to study each pair of treatment :
+  # Performs the tukey post hoc test on all pairs of treatments for the i'th feature
   TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=conf.level)
   
+  # Extracts the adjusted p-values for each tested pair
   COMPARISONS <- TUKEY[["data$treatment"]][,"p adj"]
   
   abscissa <- c(min(c(TUKEY$`data$treatment`[,"lwr"], 0)), max(c(TUKEY$`data$treatment`[,"upr"], 0)))

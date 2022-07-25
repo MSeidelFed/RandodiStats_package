@@ -13,7 +13,9 @@ distribution_test_mat <- function(nrow_x = 1000,
                                   class_method = "comparison") {
 
   if (class_method == "comparison") {
-
+    
+    ## Question: How are the input parameters chosen? e.g. shape, mean, sd etc 
+    
     ### vectors of gamma distribution
     test1 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
     for (i in 1:n_random_distributions) {

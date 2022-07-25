@@ -19,7 +19,7 @@ Variables2Shapes <- function(Distribution_test_mat = RandoDiStats::distribution_
   }
 
   ### main
-
+  
   if (class(Distribution_test_mat)[1] == "matrix") {
 
     SKEW <- vector(mode = "list", length = dim(Distribution_test_mat)[2])
