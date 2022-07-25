@@ -4,3 +4,4 @@ Document_Instructions.txt
 .Rbuildignore
 .RData
 .Rhistory
+.gitignore
