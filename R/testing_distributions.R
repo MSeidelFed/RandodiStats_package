@@ -7,6 +7,7 @@
 #' @examples
 #' test_mat_distributions <- testing_distributions()
 
+
 testing_distributions <- function(Distribution_test_mat = RandoDiStats::distribution_test_mat()) {
   
   # Calls Variables2shapes with the input matrix. Gives back for each feature the values for skweness^2 and kurtosis. 

@@ -3,7 +3,7 @@ library(readxl)
 
 
 
-file = "stats_no_means.xlsx"
+file = "C:/Users/Dell/Desktop/thesis_prepare/preparation/stats_no_means.xlsx"
 my_data = read_excel(file)
 my_data = as.data.frame(my_data)
 row_names = my_data[,3]
