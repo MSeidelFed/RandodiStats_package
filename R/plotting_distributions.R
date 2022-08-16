@@ -12,7 +12,7 @@
 #' @examples
 #' plotting_distributions()
 
-plotting_distributions <- function(test_mat = RandoDiStats::distribution_test_mat(class_method = "discovery"),
+plotting_distributions <- function(test_mat = distribution_test_mat(class_method = "discovery"),
                                    vector_colors = "black",
                                    transparency = 90,
                                    variable_name = "test_mat",
@@ -53,8 +53,8 @@ plotting_distributions <- function(test_mat = RandoDiStats::distribution_test_ma
                    dim(Variables2Shapes(test_mat))[1]))
 
   ## setting mat for plot
-  complete_mat <- rbind(RandoDiStats::Variables2Shapes(Distribution_test_mat = RandoDiStats::distribution_test_mat(class_method = "discovery")),
-                        RandoDiStats::Variables2Shapes(test_mat))
+  complete_mat <- rbind(Variables2Shapes(Distribution_test_mat = distribution_test_mat(class_method = "discovery")),
+                        Variables2Shapes(test_mat))
   
   complete_mat = na.omit(complete_mat)
   

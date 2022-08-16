@@ -7,7 +7,7 @@
 #' @examples
 #' test_mat_distribution_shapes <- Variables2Shapes()
 
-Variables2Shapes <- function(Distribution_test_mat = RandoDiStats::distribution_test_mat(class_method = "discovery")) {
+Variables2Shapes <- function(Distribution_test_mat = distribution_test_mat(class_method = "discovery")) {
 
   ### funtion to Transform a list into a data frame (https://www.rdocumentation.org/packages/qdapTools/versions/1.3.3/topics/list2df)
 

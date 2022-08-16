@@ -25,7 +25,7 @@ my_data[which(is.na(my_data))] <- abs(rnorm(length(which(is.na(my_data))), 0.000
 #test_OUS <- OmicsUnivariateStats(Factor1 = Factor1_eg, TukeyReturns = "MeanComparisons",returnObject = "OmicsTests")
 
 fact1 = as.factor(c(rep("WT_D",3),rep(" WT_L",3),rep("delkaiABC_D",3),rep("delkaiABC_L",3),rep("rpaA_D",3),rep("rpaA_L",3)))
-res = OmicsUnivariateStats(class_comparison_mat = my_data, Factor1 = fact1, TukeyReturns = "MeanComparisons", returnObject = "OmicsTests",ReturnTukeyPlots = FALSE)
+res = RandoDiStats::OmicsUnivariateStats(class_comparison_mat = my_data, Factor1 = fact1, TukeyReturns = "MeanComparisons", returnObject = "OmicsTests",ReturnTukeyPlots = FALSE)
 dim(res)
 
 
