@@ -222,11 +222,11 @@ KmeansPlus <- function(DataDir = distribution_test_mat(),
 
       if (is.null(dim(cluster_K_mat))) {
 
-        boxplot(cluster_K_mat, las = 2, cex.axis = 0.5, main = paste0("Cluster No.", i))
+        boxplot(cluster_K_mat, las = 2, cex.axis = 0.5, main = paste0("Cluster No.", names(rowOrder)[i]))
 
       } else {
 
-        boxplot(cluster_K_mat, las = 2, cex.axis = 0.5, main = paste0("Cluster No.", i))
+        boxplot(cluster_K_mat, las = 2, cex.axis = 0.5, main = paste0("Cluster No.", names(rowOrder)[i]))
 
         Cluster_Melted2 <- melt(cluster_K_mat)
 
@@ -242,14 +242,14 @@ KmeansPlus <- function(DataDir = distribution_test_mat(),
                   geom_smooth() +
                   ylim(y_Axis) +
                 geom_point(aes(colour = Treatments)) +
-                  ggtitle(paste0("Cluster No.", i)))
+                  ggtitle(paste0("Cluster No.", names(rowOrder)[i])))
 
         } else {
 
           print(c +
                   geom_smooth() +
                 geom_point(aes(colour = Treatments)) +
-                  ggtitle(paste0("Cluster No.", i)))
+                  ggtitle(paste0("Cluster No.", names(rowOrder)[i])))
 
         }
 
