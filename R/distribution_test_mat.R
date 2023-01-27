@@ -41,19 +41,13 @@ distribution_test_mat <- function(nrow_x = 1000,
       test4[,i] <- x
     }
    
-    ### vectors of poisson distribution
+    ### vectors of exponential distribution
     test5 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
     for (i in 1:n_random_distributions) {
-      x <- rpois(n = nrow_x, lambda = 0.01)
-      test6[,i] <- x
-    }
-    ### vectors of exponential distribution
-    test6 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
-    for (i in 1:n_random_distributions) {
       x <- rexp(n = nrow_x, rate = 20)
-      test7[,i] <- x
+      test5[,i] <- x
     }
-    return(cbind(test1, test2, test3, test4, test5, test6))
+    return(cbind(test1, test2, test3, test4, test5))
 
   } else if (class_method == "discovery") {
 

@@ -25,44 +25,71 @@ testing_distributions <- function(Distribution_test_mat = distribution_test_mat(
                                colMeans(distribution_mat[1001:2000,]),
                                colMeans(distribution_mat[2001:3000,]),
                                colMeans(distribution_mat[3001:4000,]),
-                               colMeans(distribution_mat[4001:5000,]),
-                               colMeans(distribution_mat[5001:6000,]))
+                               colMeans(distribution_mat[4001:5000,]))
 
   # Creates a distance matrix between the values for protein_coords and the random values from distribution_coords. 
   dist_mat <- as.matrix(raster::pointDistance(p1 = protein_coords,
                                               p2 = distribution_coords, lonlat = F, allpairs = T))
 
   Family_selection_GLM_R <- cbind(
-    Family = c("gamma","logis","beta","normal","poisson","exponential"),
-    Link = c("Inverse","Logit","Logit","Identity","Log","Inverse"),
-    GLM_R = c("Gamma","quasibinomial","quasibinomial","gaussian","quasipoisson","Gamma"))
+    Family = c("gamma","logis","beta","normal","exponential"),
+    Link = c("Inverse","Logit","Logit","Identity","Inverse"),
+    GLM_R = c("Gamma","quasibinomial","quasibinomial","gaussian","Gamma"))
 
   runner <- c()
   
   # Here we loop over the rows of the distance and the smallest value for each row (smallest euclidean distance) is
   # selected. This value determines the chosen distribution.
-  # Question: How can a case occur where test is empty? 
+  # Question: How can a case occur where test is empty?
+  Family = c("gamma","logis","beta","normal","exponential")
   for (i in 1:dim(dist_mat)[1]) {
-
+    
+    Family = c("gamma","logis","beta","normal","exponential")
     test <- Family_selection_GLM_R[, "Family"][which(dist_mat[i,] == min(dist_mat[i,]))]
     
-    if(test  != "beta") {
-      # equal should be true if the distributions match and false if they do not
-      equal = distribution_verification(feature = class_comparison_mat[,i], regfamily = test)
-      
-      if (equal) {
-        test = paste(test, " YES")
-      } else {
-        test = paste(test, " NO")
+    equal = distribution_verification(feature = Distribution_test_mat[,i], regfamily = test)
+    # assign the appropriate glm input to the test
+    if (equal) {
+      print("debug")
+      families = Family
+      families = families[-which(families==test)]
+      #Regfamilies with a positive ks.test
+      positives = character()
+      positives[1] = test
+      #Residuals of all the positive families
+      residuals = numeric()
+      residuals[1] = sum(glm(Formula,Family_selection_GLM_R[, "GLM_R"][which(Family_selection_GLM_R[,"Family"] == test)])$residuals^2)
+      for(j in 1:length(families)) {
+        res = distribution_verification(feature = class_comparison_mat[,i], regfamily = families[j])
+        if(res) {
+          positives = c(positives,families[j])
+          res == FALSE
+          print(positives[j+1])
+          residuals[length(positives)] = sum(glm(Formula,Family_selection_GLM_R[, "GLM_R"][which(Family_selection_GLM_R[,"Family"] == positives[length(positives)])])$residuals^2)
+        }
       }
+      # If residuals of family from geometric approximation are the smallest validation is passed.
+      if(min(residuals) == residuals[1]){
+        print("validation is passed")
+        test = Family_selection_GLM_R[, "GLM_R"][which(Family_selection_GLM_R[,"Family"] == test)]
+      # Else, validation is not passed.
+      } else {
+        print("validation not passed!")
+        test = "non-parametric"
+      }
+      # test here for other families
     }
+    # if the selected distributions differ, test will be non-parametric. 
+    if (!equal) {
+      test = "non-parametric"
+    }
+    
     if (length(test) > 0) {
       
       runner[i] <- test
       
     }
   }
-
   return(runner)
 
 }

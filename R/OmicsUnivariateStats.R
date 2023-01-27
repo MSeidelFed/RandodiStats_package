@@ -186,14 +186,14 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   regfamily <- c()
   
   # calling testing_distributions with input matrix, gives back a distribution for all columns (features)
-  regfamily <- RandoDiStats::testing_distributions(Distribution_test_mat = class_comparison_mat)
+  regfamily <- testing_distributions(Distribution_test_mat = class_comparison_mat)
   
   ### while loop to prevent empty GLM family error
   
   # same as above, is this because testing_distributions sometimes does not give back a distribution? 
   while (length(regfamily) == 0) {
   
-    regfamily <- RandoDiStats::testing_distributions(Distribution_test_mat = class_comparison_mat)
+    regfamily <- testing_distributions(Distribution_test_mat = class_comparison_mat)
   
   }
   
@@ -248,11 +248,27 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
     if(ReturnTukeyPlots == T) {
       
+      if(regfamily[i] == "non-parametric") {
+        return_letters <- Dunn.Test(variable = class_comparison_mat[,i],
+                                                        factor = as.factor(Levene_factor),
+                                                        MainTitle = colnames(class_comparison_mat)[i], 
+                                                        returnObject = TukeyReturns)
+      } else if (regfamily[i] == "gaussian") {
+      
       # call TukeyCustomized on the i'th column, outputs a plot value~treatment 
       return_letters <- RandoDiStats::TukeyCustomized(variable = class_comparison_mat[,i],
                                                       factor = as.factor(Levene_factor),
                                                       MainTitle = colnames(class_comparison_mat)[i], 
                                                       returnObject = TukeyReturns)
+      } else {
+        
+        model1 = glm(Formula, regfamily[i])
+        comparisons = emmeans(model1, pairwise ~ Factor1, adjust ="fdr")
+        #This has to do the plots like the Tukey Call
+        return_letters = summary(comparisons$contrasts)$p.value
+        names(return_letters) = summary(comparisons$contrasts)$contrast
+        
+      }
       
       if (TukeyReturns == "Letters") {
         
@@ -263,9 +279,6 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
         TukeyHSD_info[i,] <- return_letters
         
       }
-      
-      
-      
     }
     
     print(c(regfamily[i], "Column Number", count))
@@ -279,8 +292,16 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     # The intercept and the coefficients are stored in test. The intercept is always the control. 
     # A significant p-value indicates, that the mean of the particular group differs from the mean of the control. 
     
-    # Levene and Shapiro test. Here, homoscedastic and normally distributed. 
-    if (lawstat::levene.test(y = NA_free_var,
+    # Levene and Shapiro test. Here, homoscedastic and normally distributed.
+    
+    # Here should stand the multi glm testing. In a for loop for all the levels. The test_out will then be cbind together in the end.
+    # Same should happen for the FDR adjustment. 
+    if (regfamily[i] == "non-parametric") {
+      
+      test <- Dunn.Test(class_comparison_mat[,i],Factor1,method="none")
+      test = c(0,test[1:length(levels(Factor1))-1],"Non-parametric")
+      
+    } else if (lawstat::levene.test(y = NA_free_var,
                              group = NA_free_factor,
                              location = "median",
                              bootstrap = F)[["p.value"]] > 0.05 &
@@ -292,7 +313,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                           "Pr(>|t|)"],
                 "Homoscedastic & Parametric")
       
-    # Levene and Shapiro test. Here, heteroscedastic and normally distributed  
+      
     } else if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",
@@ -304,7 +325,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                           "Pr(>|t|)"],
                 "Heteroscedastic & Parametric")
       
-    # Levene and Shapiro test. Here, homoscedastic and not normally distributed  
+      
     } else if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",
@@ -316,7 +337,6 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                                          "Pr(>|t|)"],
                 "Homoscedastic & Non-parametric")
       
-    # Levene and Shapiro test. Here, heteroscedastic and not normally distributed  
     } else if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",
@@ -337,6 +357,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                             "Assumptions_tested")
     
   }
+  
   
   rownames(test_out) <- colnames(class_comparison_mat)
   
