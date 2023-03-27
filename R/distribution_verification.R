@@ -27,7 +27,7 @@ distribution_verification = function(regfamily,feature) {
     test = ks.test(feature,vec2)
     #test = ks.test(feature,"pbeta",shape1 = 2, shape2 = 1, ncp = 5)
     if (test$p.value>0.05) {
-      print(test$p.value)
+      #print(test$p.value)
       return(TRUE)
     } else {
       return(FALSE)
@@ -43,10 +43,9 @@ distribution_verification = function(regfamily,feature) {
     #gamm <- rgamma(n = 20, shape = a, rate = b)
     vec2 = autoscale(rgamma(len, shape = 0.1, rate= 10))
     test = ks.test(feature,vec2)
-    print(test$p.value)
+    #print(test$p.value)
     #test = ks.test(feature,"pgamma",shape = 0.1,rate = 10)
     if (test$p.value>0.05) {
-      print(test$p.value)
       return(TRUE)
     } else {
       return(FALSE)
@@ -62,7 +61,7 @@ distribution_verification = function(regfamily,feature) {
     test = ks.test(feature,vec2)
     #test = ks.test(feature,"plogis",location = 0.1, scale = 0.01)
     if (test$p.value>0.05) {
-      print(test$p.value)
+      #print(test$p.value)
       return(TRUE)
     } else {
       return(FALSE)
@@ -73,7 +72,7 @@ distribution_verification = function(regfamily,feature) {
     test = ks.test(feature,vec2)
     #test = ks.test(feature,"pnorm",mean = 0.5, sd = 0.1)
     if (test$p.value>0.05) {
-      print(test$p.value)
+      #print(test$p.value)
       return(TRUE)
     } else {
       return(FALSE)
@@ -113,7 +112,7 @@ distribution_verification = function(regfamily,feature) {
     test = ks.test(feature,vec2)
     #test = ks.test(feature,"pexp",rate=20)
     if (test$p.value>0.05) {
-      print(test$p.value)
+      #print(test$p.value)
       return(TRUE)
     } else {
       return(FALSE)
@@ -126,29 +125,3 @@ distribution_verification = function(regfamily,feature) {
 }
 
 
-
-# Function calls for each distribution
-
-
-vec = rnorm(n=1000,mean=0.5,sd=0.1)
-vec2 = rgamma(1000,shape=0.1,rate=10)
-vec3 = rexp(100,rate=20)
-vec4 = rbeta(100,shape1 = 2, shape2 = 1, ncp = 5)
-vec5 = rlogis(100,location = 0.1,scale=0.01)
-ks.test(vec,"pnorm",mean=0.5,sd=1)
-
-
-distribution_verification("normal",vec)
-distribution_verification("gamma",vec2)
-distribution_verification("exponential",vec3)
-distribution_verification("beta",vec4)
-distribution_verification("logis",vec5)
-
-
-distribution_verification("normal",mat[,4])
-distribution_verification("gamma",mat[,4])
-distribution_verification("exponential",mat[,4])
-distribution_verification("beta",mat[,4])
-distribution_verification("logis",mat[,4])
-
-mat[,2]

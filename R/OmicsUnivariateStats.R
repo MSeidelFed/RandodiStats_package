@@ -38,7 +38,9 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   ## main
   
-  #What is this exactly used for? Only execute if input matrix is distribution_test_mat?
+  #Store a copy of the original matrix
+  mat_original <- class_comparison_mat
+  
   if (dim(class_comparison_mat)[1] == dim(RandoDiStats::distribution_test_mat())[1] &
       dim(class_comparison_mat)[2] == dim(RandoDiStats::distribution_test_mat())[2]) {
     
@@ -74,6 +76,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   print(Formula)
   
   ## removing all kind of error prone features from the input matrices
+  
   
   #### unity-based normalization
   
@@ -197,6 +200,12 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   }
   
+  #reassign unscaled values, otherwise, log-transformation for gamma regression does not work!
+  gamma_vectors = colnames(class_comparison_mat)[which(regfamily=="Gamma")]
+  data_original = mat_original[,gamma_vectors]
+  class_comparison_mat[,gamma_vectors] = data_original
+
+  
   ## for loop for tests
   
   
@@ -244,29 +253,106 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
     count = count + 1
     
+    # Removal of NA's in i'th column for variable and factor
+    NA_free_var <- class_comparison_mat[,i][!is.na(class_comparison_mat[,i])]
+    
+    NA_free_factor <- Levene_factor[!is.na(class_comparison_mat[,i])]
+    
     ## TukeyPlots
     
     if(ReturnTukeyPlots == T) {
       
-      if(regfamily[i] == "non-parametric") {
-        return_letters <- Dunn.Test(variable = class_comparison_mat[,i],
-                                                        factor = as.factor(Levene_factor),
-                                                        MainTitle = colnames(class_comparison_mat)[i], 
-                                                        returnObject = TukeyReturns)
+      if (regfamily[i] == "non-parametric") {
+        
+        return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
+                                        factor = as.factor(Levene_factor),
+                                        mode = "non-parametric",
+                                        MainTitle = colnames(class_comparison_mat)[i], 
+                                        returnObject = TukeyReturns)
+        
+        
+        plot.new()
+        
       } else if (regfamily[i] == "gaussian") {
-      
-      # call TukeyCustomized on the i'th column, outputs a plot value~treatment 
-      return_letters <- RandoDiStats::TukeyCustomized(variable = class_comparison_mat[,i],
-                                                      factor = as.factor(Levene_factor),
-                                                      MainTitle = colnames(class_comparison_mat)[i], 
-                                                      returnObject = TukeyReturns)
+        
+        if (lawstat::levene.test(y = NA_free_var,
+                                 group = NA_free_factor,
+                                 location = "median",
+                                 bootstrap = F)[["p.value"]] > 0.05 &
+            shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
+          
+          
+          return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
+                                          factor = as.factor(Levene_factor),
+                                          mode = "lm",
+                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          returnObject = TukeyReturns)
+          
+        } else if (lawstat::levene.test(y = NA_free_var,
+                                        group = NA_free_factor,
+                                        location = "median",
+                                        bootstrap = F)[["p.value"]] < 0.05 &
+                   shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
+          
+          return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
+                                          factor = as.factor(Levene_factor),
+                                          mode = "lm",
+                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          returnObject = TukeyReturns)
+          
+        } else {
+          print("gaus to non-parametric")
+          regfamily[i] = "non-parametric"
+          return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
+                                          factor = as.factor(Levene_factor),
+                                          mode = "non-parametric",
+                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          returnObject = TukeyReturns)
+          plot.new()    
+        }
+        
+        
       } else {
         
-        model1 = glm(Formula, regfamily[i])
-        comparisons = emmeans(model1, pairwise ~ Factor1, adjust ="fdr")
-        #This has to do the plots like the Tukey Call
-        return_letters = summary(comparisons$contrasts)$p.value
-        names(return_letters) = summary(comparisons$contrasts)$contrast
+        if (lawstat::levene.test(y = NA_free_var,
+                                 group = NA_free_factor,
+                                 location = "median",
+                                 bootstrap = F)[["p.value"]] > 0.05 &
+            shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
+          
+          return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
+                                          factor = as.factor(Levene_factor),
+                                          mode = "glm",
+                                          regfamily = regfamily[i],
+                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          returnObject = TukeyReturns)
+          plot.new()
+          
+        } else if (lawstat::levene.test(y = NA_free_var,
+                                        group = NA_free_factor,
+                                        location = "median",
+                                        bootstrap = F)[["p.value"]] < 0.05 &
+                   shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
+          
+          
+          return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
+                                          factor = as.factor(Levene_factor),
+                                          mode = "glm",
+                                          regfamily = regfamily[i],
+                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          returnObject = TukeyReturns)
+          plot.new()
+          
+        } else {
+          print("glm to non-parametric")
+          regfamily[i] = "non-parametric"
+          return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
+                                          factor = as.factor(Levene_factor),
+                                          mode = "non-parametric",
+                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          returnObject = TukeyReturns)
+          plot.new()    
+        }
         
       }
       
@@ -284,70 +370,81 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     print(c(regfamily[i], "Column Number", count))
     
     # Removal of NA's in i'th column for variable and factor
-    NA_free_var <- class_comparison_mat[,i][!is.na(class_comparison_mat[,i])]
+    #NA_free_var <- class_comparison_mat[,i][!is.na(class_comparison_mat[,i])]
     
-    NA_free_factor <- Levene_factor[!is.na(class_comparison_mat[,i])]
+    #NA_free_factor <- Levene_factor[!is.na(class_comparison_mat[,i])]
     
     # Here either a lm or a glm is build depending on the results of the Levene's and shapiro test.
     # The intercept and the coefficients are stored in test. The intercept is always the control. 
     # A significant p-value indicates, that the mean of the particular group differs from the mean of the control. 
     
-    # Levene and Shapiro test. Here, homoscedastic and normally distributed.
-    
-    # Here should stand the multi glm testing. In a for loop for all the levels. The test_out will then be cbind together in the end.
-    # Same should happen for the FDR adjustment. 
     if (regfamily[i] == "non-parametric") {
       
-      test <- Dunn.Test(class_comparison_mat[,i],Factor1,method="none")
+      test <- DunnTest(variable = class_comparison_mat[,i], factor = Levene_factor, method="none")
       test = c(0,test[1:length(levels(Factor1))-1],"Non-parametric")
       
-    } else if (lawstat::levene.test(y = NA_free_var,
-                             group = NA_free_factor,
-                             location = "median",
-                             bootstrap = F)[["p.value"]] > 0.05 &
-        shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
+    } else if (regfamily[i] == "gaussian") {
       
+      if (lawstat::levene.test(y = NA_free_var,
+                               group = NA_free_factor,
+                               location = "median",
+                               bootstrap = F)[["p.value"]] > 0.05 &
+          shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
+        
+        test <- c(summary(lm(Formula))$coef[1:dim(summary(glm(Formula,
+                                                              gaussian))$coef)[1],
+                                            "Pr(>|t|)"],
+                  "Homoscedastic & Parametric")
+      } else if (lawstat::levene.test(y = NA_free_var,
+                                      group = NA_free_factor,
+                                      location = "median",
+                                      bootstrap = F)[["p.value"]] < 0.05 &
+                 shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
+        
+        test <- c(summary(lm(Formula))$coef[1:dim(summary(glm(Formula,
+                                                              gaussian))$coef)[1],
+                                            "Pr(>|t|)"],
+                  "Heteroscedastic & Parametric")
+      } else {
+        print("gaus to non-parametric 2")
+        regfamily[i] = "non-parametric"
+        test <- DunnTest(variable = class_comparison_mat[,i], factor = Levene_factor, method="none")
+        test = c(0,test[1:length(levels(Factor1))-1],"Non-parametric")
+      }
       
-      test <- c(summary(lm(Formula))$coef[1:dim(summary(glm(Formula,
-                                                            gaussian))$coef)[1],
-                                          "Pr(>|t|)"],
-                "Homoscedastic & Parametric")
+
+    } else {
       
-      
-    } else if (lawstat::levene.test(y = NA_free_var,
-                                    group = NA_free_factor,
-                                    location = "median",
-                                    bootstrap = F)[["p.value"]] < 0.05 &
-               shapiro.test(x = class_comparison_mat[,i])[["p.value"]] > 0.05) {
-      
-      test <- c(summary(lm(Formula))$coef[1:dim(summary(glm(Formula,
-                                                            gaussian))$coef)[1],
-                                          "Pr(>|t|)"],
-                "Heteroscedastic & Parametric")
-      
-      
-    } else if (lawstat::levene.test(y = NA_free_var,
+      if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",
                                     bootstrap = F)[["p.value"]] > 0.05 &
                shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
       
-      test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
-                                                                           regfamily[i]))$coef)[1],
-                                                         "Pr(>|t|)"],
-                "Homoscedastic & Non-parametric")
+        test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
+                                                                             regfamily[i]))$coef)[1],
+                                                           "Pr(>|t|)"],
+                  "Homoscedastic & Non-parametric")
       
-    } else if (lawstat::levene.test(y = NA_free_var,
+      } else if (lawstat::levene.test(y = NA_free_var,
                                     group = NA_free_factor,
                                     location = "median",
                                     bootstrap = F)[["p.value"]] < 0.05 &
                shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
+  
       
-      test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
-                                                                           regfamily[i]))$coef)[1],
-                                                         "Pr(>|t|)"],
-                "Heteroscedastic & Non-parametric")
+        test <- c(summary(glm(Formula, regfamily[i]))$coef[1:dim(summary(glm(Formula,
+                                                                             regfamily[i]))$coef)[1],
+                                                           "Pr(>|t|)"],
+                  "Heteroscedastic & Non-parametric")
       
+      } else {
+        print("glm to non-parametric 2")
+        regfamily[i] = "non-parametric"
+        test <- DunnTest(variable = class_comparison_mat[,i], factor = Levene_factor, method="none")
+        test = c(0,test[1:length(levels(Factor1))-1],"Non-parametric")
+      }
+    
     }
     
     test_out[i,] <- test

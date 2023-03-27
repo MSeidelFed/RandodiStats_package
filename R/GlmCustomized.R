@@ -1,5 +1,5 @@
 
-GLMCustomized <- function(variable,
+GlmCustomized <- function(variable,
                             factor,
                             mode = c("lm","non-parametric","glm"),
                             regfamily = "",
@@ -21,7 +21,7 @@ GLMCustomized <- function(variable,
     
   }
   
-  # I need the names to match exactly the Tukey ones
+  # I need the colnames to match exactly the Tukey ones
   model=lm(data$value ~ data$treatment)
   ANOVA=aov(model)
   TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=conf.level)
@@ -61,15 +61,15 @@ GLMCustomized <- function(variable,
   if (mode == "lm") {
     # What is the effect of the treatment on the value ?
     # Same as: ANOVA = aov(data$value~data$treatment,data=data)
-    model=lm(data$value ~ data$treatment)
-    ANOVA=aov(model)
+    #model=lm(data$value ~ data$treatment)
+    #ANOVA=aov(model)
     
     # Tukey test to study each pair of treatment :
     # Performs the tukey post hoc test on all pairs of treatments for the i'th feature
-    TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=conf.level)
+    #TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=conf.level)
     
     # Extracts the adjusted p-values for each tested pair
-    COMPARISONS <- TUKEY[["data$treatment"]][,"p adj"]
+    #COMPARISONS <- TUKEY[["data$treatment"]][,"p adj"]
     
     abscissa <- c(min(c(TUKEY$`data$treatment`[,"lwr"], 0)), max(c(TUKEY$`data$treatment`[,"upr"], 0)))
     
@@ -79,13 +79,25 @@ GLMCustomized <- function(variable,
     # Apply the function on my dataset
     
     
-  } else if (mode == "non-parametric") { 
-    COMPARISONS = Dunn.Test(data$value,data$treatment)
+  } else if (mode == "non-parametric") {
+    
+    COMPARISONS = DunnTest(variable = data$value, factor = data$treatment, method = "BH")
     names(COMPARISONS) = names_comp
     
   } else if (mode == "glm") {
-    fact = as.factor(data$treatment)
-    COMPARISONS = glm(data$value~fact, family = regfamily) %>% emmeans(pairwise ~ fact,adjust = "Tukey")
+    
+    if (regfamily == "quasibinomial") {
+      regfamily = quasibinomial(link="identity")
+      fact = as.factor(data$treatment)
+    } else if (regfamily == "Gamma") {
+      regfamily = Gamma(link="log")
+      #data$value[which.min(data$value)] = data$value[which.min(data$value)] +   0.00000001
+      fact = as.factor(data$treatment)
+    } else {
+      fact = as.factor(data$treatment)
+    }
+    #here a change is required .. Gamma has to be rescaled to former values
+    COMPARISONS = glm(data$value~fact, family = regfamily) %>% emmeans::emmeans(pairwise ~ fact,adjust = "Tukey")
     COMPARISONS = summary(COMPARISONS$contrasts)$p.value
     names(COMPARISONS) = names_comp
     

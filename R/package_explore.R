@@ -3,6 +3,9 @@ library(dunn.test)
 detach("package:RandoDiStats",unload=TRUE)
 
 
+file = "C:/Users/Dell/Desktop/thesis_prepare/preparation/avengers.csv"
+avengers = read.csv(file)
+
 file = "C:/Users/Dell/Desktop/thesis_prepare/preparation/stats_no_means.xlsx"
 my_data = read_excel(file)
 my_data = as.data.frame(my_data)
@@ -17,7 +20,7 @@ class(my_data[1,1])
 
 
 
-fact1 = as.factor(c(rep("WT_D",3),rep("WT_L",3),rep("delkaiABC_D",3),rep("delkaiABC_L",3),rep("rpaA_D",3),rep("rpaA_L",3)))
+treatment = as.factor(c(rep("WT_D",3),rep("WT_L",3),rep("delkaiABC_D",3),rep("delkaiABC_L",3),rep("rpaA_D",3),rep("rpaA_L",3)))
 res = RandoDiStats::OmicsUnivariateStats(class_comparison_mat = my_data, Factor1 = fact1, TukeyReturns = "MeanComparisons", returnObject = "OmicsTests",ReturnTukeyPlots = TRUE)
 my_res = OmicsUnivariateStats(class_comparison_mat = my_data, Factor1 = fact1, TukeyReturns = "MeanComparisons", returnObject = "OmicsTests",ReturnTukeyPlots = TRUE)
 
@@ -364,8 +367,58 @@ Factor1 = fact1
 
 
 
+feature = rgamma(1000,shape = 0.1, rate= 10)
+test_fact = rep(c("A","B","C","D","E","F","G","H","I","J"),100)
+model = glm(feature~test_fact,family="gaussian")
+model2 = glm(feature~test_fact,family="Gamma")
+summary(model)
+summary(model2)
+
+
+sum(model$residuals^2)
+sum(model2$residuals^2)
 
 
 
+test_fact = rep(c("A","B","C"),10)
+test_fact2 = rep(c("D","E"),15)
+vec = rnorm(30)
+Levene_factor = as.factor(paste(test_fact, test_fact2, sep = "_"))
 
+
+
+data <- cbind.data.frame(value = as.numeric(vec), treatment = as.factor(Levene_factor))
+
+
+model=lm(data$value ~ data$treatment)
+ANOVA=aov(model)
+TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=0.95)
+COMPARISONS <- TUKEY[["data$treatment"]][,"p adj"]
+
+
+
+dunn_test(data = data, value~treatment)
+
+
+norm1 = rnorm(5,2,0.02)
+norm2 = rnorm(5,4,0.8)
+norm = c(norm1,norm2)
+groups = c("A","A","A","A","A","B","B","B","B","B")
+groups = as.factor(groups)
+t.test(norm1,)
+dunn.test::dunn.test(x=norm,g=groups)
+ANOVA = aov(norm~groups)
+
+fact1 = as.factor(rep(c("D","E","F","G","H","I"),3))
+fact2 = as.factor(rep(c("A","B"),9))
+
+res = OmicsUnivariateStats(class_comparison_mat = my_data,
+                           Factor1 = Factor1,
+                           Factor2 = NULL,
+                           Contrast = F,
+                           TukeyReturns = "MeanComparisons",
+                           ReturnTukeyPlots = T,
+                           TukeyPDFName = "test",
+                           marginsTukey = c(6,12,3,3),
+                           returnObject = "OmicsTests")
 

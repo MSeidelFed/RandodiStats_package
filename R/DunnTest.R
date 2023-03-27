@@ -1,19 +1,10 @@
-library(dunn.test)
-
-Dunn.Test = function(variable,
-                    factor,
-                    altp = TRUE,
-                    method = "bh",
-                    MainTitle = "",
-                    returnObject = c("Letters", "MeanComparisons")) {
+DunnTest = function(variable,
+                     factor,
+                     method = "BH")  {
   
-  test = dunn.test(variable,factor,altp = altp, method = method)
-  test = cbind.data.frame(test$comparisons,test$Z,test$altP.adjusted)
-  test = test[order(test$`test$comparisons`),]
-  test_out = test$`test$altP.adjusted`
-  names(test_out) = test$`test$comparisons`
-  return(test_out)
+  data <- cbind.data.frame(value = as.numeric(variable), treatment = as.factor(factor))
+  test = rstatix::dunn_test(data = data, formula = value~treatment, p.adjust.method = method)$p.adj
+  return(test)
   
 }
-
 
