@@ -16,7 +16,7 @@ test_vec = numeric()
 fact = fact1
 for (i in 1:length(levels(fact1))){
   fact1 = relevel(fact1,levels(fact1)[i])
-  test <- summary(glm(vec~fact1, "gaussian"))$coef[1:dim(summary(glm(vec~fact1,
+  test <- summary(glm(vec~fact1, "quasibinomial"))$coef[1:dim(summary(glm(vec~fact1,
                                                                     "gaussian"))$coef)[1],
                                                   "Pr(>|t|)"]
   print(levels(fact1))

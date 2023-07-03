@@ -21,6 +21,7 @@ class(my_data[1,1])
 
 
 treatment = as.factor(c(rep("WT_D",3),rep("WT_L",3),rep("delkaiABC_D",3),rep("delkaiABC_L",3),rep("rpaA_D",3),rep("rpaA_L",3)))
+treatment_joint = as.factor(c(rep("WT_D",3),rep("WT_L",3),rep("delkaiABC",6),rep("rpaA",6)))
 res = RandoDiStats::OmicsUnivariateStats(class_comparison_mat = my_data, Factor1 = fact1, TukeyReturns = "MeanComparisons", returnObject = "OmicsTests",ReturnTukeyPlots = TRUE)
 my_res = OmicsUnivariateStats(class_comparison_mat = my_data, Factor1 = fact1, TukeyReturns = "MeanComparisons", returnObject = "OmicsTests",ReturnTukeyPlots = TRUE)
 
@@ -80,13 +81,14 @@ test2 = TukeyCustomized(class_comparison_mat[,1],fact1,returnObject = "MeanCompa
 
 
 
-res = RandoDiStats::OmicsUnivariateStats(class_comparison_mat = my_data,
+results_analysis = RandoDiStats::OmicsUnivariateStats(
+                     class_comparison_mat = my_data,
                      Factor1 = fact1,
                      Factor2 = NULL,
                      Contrast = F,
                      TukeyReturns = "MeanComparisons",
                      ReturnTukeyPlots = T,
-                     TukeyPDFName = "test",
+                     TukeyPDFName = "Analysis_output",
                      marginsTukey = c(6,12,3,3),
                      returnObject = "OmicsTests")
 
@@ -183,7 +185,6 @@ plot(density(vec),main = "Density of the vector")
 
 colours <- c(rep("blue", 1000),
              rep("red", 1000),
-             rep("grey", 1000),
              rep("yellow", 1000),
              rep("pink", 1000))
 
@@ -196,6 +197,13 @@ colours <- c(rep("blue", 1000),
 #}
 
 plot(y = 6, x = 2,ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis", col = colours[1])
+
+legend("topright",
+       col = c("blue","red","yellow","pink"),
+       pch = 18,
+       legend = c("gamma","logis","beta","exponential"))
+
+
 
 SKEW <- vector(mode = "list", length = 1000)
 KURT <- vector(mode = "list", length = 1000)
@@ -211,9 +219,9 @@ for (i in 1:1000){
 plot(y = KURT , x = SKEW, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis", col = colours[1])
 
 legend("topright",
-       col = c("blue","red","grey","yellow","purple"),
+       col = c("blue","red","yellow","pink"),
        pch = 18,
-       legend = c("gamma","logis","beta","normal","exponential"))
+       legend = c("gamma","logis","beta","exponential"))
 
 SKEW2 <- vector(mode = "list", length = 1000)
 KURT2 <- vector(mode = "list", length = 1000)
@@ -231,6 +239,13 @@ kurt_new = c(KURT,KURT2)
 plot(y = kurt_new , x = skew_new, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis", col = c(rep("blue", 1000),
                                                                                                                     rep("red", 1000)))
 
+
+legend("topright",
+       col = c("blue","red","yellow","pink"),
+       pch = 18,
+       legend = c("gamma","logis","beta","exponential"))
+
+
 SKEW3 <- vector(mode = "list", length = 1000)
 KURT3 <- vector(mode = "list", length = 1000)
 
@@ -246,7 +261,12 @@ kurt_new = c(KURT,KURT2,KURT3)
 
 plot(y = kurt_new , x = skew_new, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis", col = c(rep("blue", 1000),
                                                                                                                     rep("red", 1000),
-                                                                                                                    rep("grey",1000)))
+                                                                                                                    rep("yellow",1000)))
+
+legend("topright",
+       col = c("blue","red","yellow","pink"),
+       pch = 18,
+       legend = c("gamma","logis","beta","exponential"))
 
 SKEW4 <- vector(mode = "list", length = 1000)
 KURT4 <- vector(mode = "list", length = 1000)
@@ -263,8 +283,16 @@ kurt_new = c(KURT,KURT2,KURT3,KURT4)
 
 plot(y = kurt_new , x = skew_new, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis", col = c(rep("blue", 1000),
                                                                                                                     rep("red", 1000),
-                                                                                                                    rep("grey",1000),
-                                                                                                                    rep("yellow",1000)))
+                                                                                                                    rep("yellow",1000),
+                                                                                                                    rep("pink",1000)))
+
+
+
+legend("topright",
+       col = c("blue","red","yellow","pink"),
+       pch = 18,
+       legend = c("gamma","logis","beta","exponential"))
+
 
 SKEW5 <- vector(mode = "list", length = 1000)
 KURT5 <- vector(mode = "list", length = 1000)
@@ -291,8 +319,8 @@ legend("topright",
 
 
 points(0.5,7,col="black",pch=19,cex=2)
-skew_new = c(SKEW,SKEW2,SKEW3,SKEW4,SKEW5,0.5)
-kurt_new = c(KURT,KURT2,KURT3,KURT4,KURT5,7)
+skew_new = c(SKEW,SKEW2,SKEW3,SKEW4,0.5)
+kurt_new = c(KURT,KURT2,KURT3,KURT4,7)
 
 plot(y = kurt_new , x = skew_new, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis", col = c(rep("blue", 1000),
                                                                                                                     rep("red", 1000),
@@ -306,17 +334,37 @@ legend("topright",
        legend = c("gamma","logis","beta","normal","exponential","metabolite"))
 
 
-skew_new = c(mean(unlist(SKEW)),mean(unlist(SKEW2)),mean(unlist(SKEW3)),mean(unlist(SKEW4)),mean(unlist(SKEW5)),0.5)
-kurt_new = c(mean(unlist(KURT)),mean(unlist(KURT2)),mean(unlist(KURT3)),mean(unlist(KURT4)),mean(unlist(KURT5)),7)
+skew_new = c(mean(unlist(SKEW)),mean(unlist(SKEW2)),mean(unlist(SKEW3)),mean(unlist(SKEW4)))
+kurt_new = c(mean(unlist(KURT)),mean(unlist(KURT2)),mean(unlist(KURT3)),mean(unlist(KURT4)))
 
-plot(y = kurt_new , x = skew_new, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis",pch=c(19,19,19,19,19,4),cex=2, col = c("blue","red","grey",
-                                                                                                                    "yellow","purple",
+plot(y = kurt_new , x = skew_new, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis",pch=c(19,19,19,19,19,4),cex=2, col = c("blue","red","yellow",
+                                                                                                                    "pink",
                                                                                                                     "black"))
 
 legend("topright",
-       col = c("blue","red","grey","yellow","purple","black"),
+       col = c("blue","red","yellow","pink"),
        pch = 18,
-       legend = c("gamma","logis","beta","normal","exponential","metabolite"))
+       legend = c("gamma","logis","beta","exponential"))
+
+
+
+
+
+
+skew_new2 = c(mean(unlist(SKEW)),mean(unlist(SKEW2)),mean(unlist(SKEW3)),mean(unlist(SKEW4)),0.5)
+kurt_new2 = c(mean(unlist(KURT)),mean(unlist(KURT2)),mean(unlist(KURT3)),mean(unlist(KURT4)),7)
+
+plot(y = kurt_new2 , x = skew_new2, ylim = c(25,0), xlim = c(0,10),xlab="Square of Skewness",ylab="Kurtosis",pch=c(19,19,19,19,19,4),cex=2, col = c("blue","red","yellow",
+                                                                                                                                                  "pink",
+                                                                                                                                                  "black"))
+
+legend("topright",
+       col = c("blue","red","yellow","pink","black"),
+       pch = 18,
+       legend = c("gamma","logis","beta","exponential","metabolite"))
+
+
+
 
 
 
@@ -412,13 +460,204 @@ ANOVA = aov(norm~groups)
 fact1 = as.factor(rep(c("D","E","F","G","H","I"),3))
 fact2 = as.factor(rep(c("A","B"),9))
 
-res = OmicsUnivariateStats(class_comparison_mat = my_data,
-                           Factor1 = Factor1,
+test_res = Omics_univariate_stats_shapiro_test(class_comparison_mat = my_data,
+                           Factor1 = fact_test,
                            Factor2 = NULL,
                            Contrast = F,
                            TukeyReturns = "MeanComparisons",
                            ReturnTukeyPlots = T,
-                           TukeyPDFName = "test",
+                           TukeyPDFName = "result_final",
                            marginsTukey = c(6,12,3,3),
                            returnObject = "OmicsTests")
 
+test_res = OmicsUnivariateStats(class_comparison_mat = Rand_vec_sig_diff,
+                           Factor1 = Groupings,
+                           Factor2 = NULL,
+                           Contrast = F,
+                           TukeyReturns = "MeanComparisons",
+                           ReturnTukeyPlots = T,
+                           TukeyPDFName = "test2",
+                           marginsTukey = c(6,12,3,3),
+                           returnObject = "OmicsTests")
+
+test_mat = distribution_test_mat()
+dim(test_mat)
+
+count = 0
+
+fact_test = as.factor(c(rep("wt",6),rep("mutant",12)))
+
+
+
+glm(normalized_test_mat[,1]~treatment, family = "gaussian") tidyr::`%>%` emmeans::emmeans(pairwise ~ fact, adjust = "Tukey")
+
+
+
+delkai_d_wt_d = res[,18]
+delkai_l_wt_l = res[,23]
+rpa_l_wt_l = res[,27]
+rpa_d_wt_d = res[,25]
+
+comp1 = names(delkai_d_wt_d[delkai_d_wt_d<0.05])
+comp2 =names(delkai_d_wt_d[delkai_d_wt_d<0.05])
+comp3 =names(rpa_d_wt_d[rpa_d_wt_d<0.05])
+comp4 =names(rpa_l_wt_l[rpa_l_wt_l<0.05])
+all = c(comp1,comp2,comp3,comp4)
+length(unique(all))
+
+kai = c(comp1,comp2)
+rpa = c(comp3,comp4)
+kai
+rpa
+
+
+
+
+file = "C:/Users/Dell/Desktop/thesis_prepare/second_data_set.xlsx"
+second_dataset = read_excel(file, sheet = "normalized data")
+second_dataset = as.data.frame(second_dataset)
+metabolite_names = second_dataset[,1]
+second_dataset = second_dataset[,-c(1)]
+rownames(second_dataset) = metabolite_names
+second_dataset = t(second_dataset)
+row_names = rownames(second_dataset)
+second_dataset = apply(second_dataset, 2, as.numeric)
+rownames(second_dataset) = row_names
+class(second_dataset[1,1])
+
+
+treatment_second_dataset = read_excel(file,sheet = "treatments")
+treatment_second_dataset = as.data.frame(treatment_second_dataset)
+treatment_second_dataset = treatment_second_dataset$genotype
+treatment_second_dataset = as.factor(treatment_second_dataset)
+
+
+res_second_dataset = Omics_univariate_stats_shapiro_test(class_comparison_mat = mat,
+                                               Factor1 = Groupings,
+                                               Factor2 = NULL,
+                                               Contrast = F,
+                                               TukeyReturns = "MeanComparisons",
+                                               ReturnTukeyPlots = T,
+                                               TukeyPDFName = "result_second_datase",
+                                               marginsTukey = c(6,12,3,3),
+                                               returnObject = "OmicsTests")
+
+
+
+count = 0
+for(i in 1:dim(normalized_test_mat_second)[2]){
+  if(shapiro.test(normalized_test_mat_second[,i])$p.value>0.05 & levene.test(normalized_test_mat_second[,i],treatment_second_dataset)$p.value>0.05) {
+    count = count + 1
+  }
+}
+count
+
+count = 0
+for(i in 1:dim(normalized_test_mat_second)[2]){
+  if(levene.test(normalized_test_mat_second[,i],treatment_second_dataset)$p.value<=0.05) {
+    count = count + 1
+  }
+}
+count
+
+count = 0
+for(i in 1:dim(normalized_test_mat_second)[2]){
+  if(shapiro.test(normalized_test_mat_second[,i])$p.value>0.05) {
+    count = count + 1
+  }
+}
+count
+
+
+file = "C:/Users/Dell/Desktop/final_res_second.RDS"
+saveRDS(res_second_dataset,file)
+
+
+
+wt_vs_all = res_second_dataset[,c(28,35,41,46,50,53,55,56)]
+which(wt_vs_all[,1]<=0.05)
+
+AP_1011A = which(wt_vs_all[,1]<=0.05)
+AP_1011B = which(wt_vs_all[,2]<=0.05)
+AP_1012B = which(wt_vs_all[,3]<=0.05)
+AP_1012C = which(wt_vs_all[,4]<=0.05)
+AP_1012D = which(wt_vs_all[,5]<=0.05)
+Nt_Hyg = which(wt_vs_all[,6]<=0.05)
+Nt_Kan = which(wt_vs_all[,7]<=0.05)
+Ntca16 = which(wt_vs_all[,8]<=0.05)
+
+
+significances_wt_vs_all = list(AP_1011A,AP_1011B,AP_1012B,AP_1012C,AP_1012D,Nt_Hyg,Nt_Kan,Ntca16)
+names(significances_wt_vs_all) = names
+
+for(i in 1:length(significances_wt_vs_all)){
+  print(names(significances_wt_vs_all[i]))
+  print(length(significances_wt_vs_all[[i]]))
+}
+
+
+
+
+
+
+
+Groupings <- as.factor(c(rep("G1", 4),
+                         rep("G2", 4),
+                         rep("G3", 4),
+                         rep("G4", 4)))
+
+GlmCustomized(Rand_vec_sig_diff,Groupings,mode = "lm", returnObject = "MeanComparisons")
+log_trans = log(Rand_vec_sig_diff)
+shapiro.test(log_trans)
+lawstat::levene.test(log_trans,Groupings)
+GlmCustomized(log_trans,Groupings,mode = "lm", returnObject = "MeanComparisons")
+log_trans = feature_scaling(log_trans)
+GlmCustomized(log_trans,Groupings,mode = "glm", returnObject  = "MeanComparisons", regfamily = "quasibinomial")
+
+
+GlmCustomized(Rand_vec_sig_diff,Groupings,mode = "lm", returnObject = "MeanComparisons")
+GlmCustomized(Rand_vec_sig_diff,Groupings,mode = "glm",regfamily = "Gamma", returnObject = "MeanComparisons")
+GlmCustomized(Rand_vec_sig_diff2,Groupings,mode = "lm", returnObject = "MeanComparisons")
+GlmCustomized(Rand_vec_sig_diff2,Groupings,mode = "glm",regfamily = "quasibinomial", returnObject = "MeanComparisons")
+
+
+
+log_trans = log(Rand_vec_sig_diff)
+log_trans = feature_scaling(log_trans)
+log_trans[16] = log_trans[16] + 0.0000000001
+shapiro.test(log_trans)
+lawstat::levene.test(log_trans,Groupings)
+GlmCustomized(log_trans,Groupings,mode = "lm", returnObject = "MeanComparisons")
+GlmCustomized(log_trans,Groupings,mode = "glm", returnObject  = "MeanComparisons", regfamily = "quasibinomial")
+
+
+
+
+
+
+
+log_trans2 = Rand_vec_sig_diff2
+log_trans2 = feature_scaling(log_trans2)
+shapiro.test(log_trans2)
+lawstat::levene.test(log_trans2,Groupings)
+GlmCustomized(log_trans2,Groupings,mode = "lm", returnObject = "MeanComparisons")
+GlmCustomized(log_trans2,Groupings,mode = "glm", returnObject  = "MeanComparisons", regfamily = "quasibinomial")
+
+
+
+pow_trans = powerTransform(Rand_vec_sig_diff)
+pow_trans$y
+
+
+
+
+
+for(i in 1:dim(normalized_test_mat)[2]){
+  print(i)
+  #print(levene.test(normalized_test_mat[,i],treatment)$p.value)
+  print(shapiro.test(normalized_test_mat[,i])$p.value)
+}
+
+
+
+boxplot(normalized_test_mat[,42]~treatment,col="red")

@@ -47,8 +47,6 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
                rep("grey", 1000),
                rep("yellow", 1000),
                rep("pink", 1000),
-               rep("orange", 1000),
-               rep("purple", 1000),
                rep(t_col(color = vector_colors, percent = transparency),
                    dim(Variables2Shapes(test_mat))[1]))
 
@@ -86,8 +84,8 @@ plotting_distributions <- function(test_mat = distribution_test_mat(class_method
        main = MainPlotName)
 
   legend("topright",
-         col = c("blue","red","grey","yellow","pink","orange","purple", vector_colors),
+         col = c("blue","red","grey","yellow","pink", vector_colors),
          pch = 18,
-         legend = c("gamma","logis","beta","normal","binomial","poisson","exponential", variable_name))
+         legend = c("gamma","logis","beta","normal","exponential", variable_name))
 
 }

@@ -8,7 +8,7 @@ distribution_verification = function(regfamily,feature) {
     return((vec - rep(mean(vec),length(vec)))/rep(sd(vec),length(vec)))
   }
   
-  feature = autoscale(feature)
+  feature = scale(feature)
   len = length(feature)
   #estBetaParams <- function(mu, var) {
   #  alpha <- ((1 - mu) / var - 1 / mu) * mu ^ 2
@@ -27,9 +27,9 @@ distribution_verification = function(regfamily,feature) {
     test = ks.test(feature,vec2)
     #test = ks.test(feature,"pbeta",shape1 = 2, shape2 = 1, ncp = 5)
     if (test$p.value>0.05) {
-      #print(test$p.value)
       return(TRUE)
     } else {
+      print(test$p.value)
       return(FALSE)
     }
   }
@@ -48,6 +48,7 @@ distribution_verification = function(regfamily,feature) {
     if (test$p.value>0.05) {
       return(TRUE)
     } else {
+      print(test$p.value)
       return(FALSE)
     }
     
@@ -64,6 +65,7 @@ distribution_verification = function(regfamily,feature) {
       #print(test$p.value)
       return(TRUE)
     } else {
+      print(test$p.value)
       return(FALSE)
     }
     
@@ -75,6 +77,7 @@ distribution_verification = function(regfamily,feature) {
       #print(test$p.value)
       return(TRUE)
     } else {
+      print(test$p.value)
       return(FALSE)
     }
     
@@ -115,6 +118,7 @@ distribution_verification = function(regfamily,feature) {
       #print(test$p.value)
       return(TRUE)
     } else {
+      print(test$p.value)
       return(FALSE)
     }
     

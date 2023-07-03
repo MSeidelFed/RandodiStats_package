@@ -9,26 +9,6 @@ GlmCustomized <- function(variable,
                             ylabTukeys = NULL,
                             xlabTukeys = NULL) {
   
-  
-  if (class(variable) == "numeric" & class(factor) == "factor") {
-    
-    # put together the variable and the facter as data.frame
-    data <- cbind.data.frame(value = as.numeric(variable), treatment = as.factor(factor))
-    
-  } else {
-    
-    stop("Please check the class of the input data (variable must be numeric and factor must be factor)")
-    
-  }
-  
-  # I need the colnames to match exactly the Tukey ones
-  model=lm(data$value ~ data$treatment)
-  ANOVA=aov(model)
-  TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=conf.level)
-  COMPARISONS <- TUKEY[["data$treatment"]][,"p adj"]
-  names_comp = names(COMPARISONS)
-  
-  
   generate_label_df <- function(COMPARISONS){
     
     # Extract labels and factor levels from Tukey post-hoc
@@ -58,30 +38,34 @@ GlmCustomized <- function(variable,
     return(Tukey.labels)
   }
   
+  
+  if (class(variable) == "numeric" & class(factor) == "factor") {
+    
+    # put together the variable and the facter as data.frame
+    data <- cbind.data.frame(value = as.numeric(variable), treatment = as.factor(factor))
+    
+  } else {
+    
+    stop("Please check the class of the input data (variable must be numeric and factor must be factor)")
+    
+  }
+  
+  # I need the colnames to match exactly the Tukey ones
+  model=lm(data$value ~ data$treatment)
+  ANOVA=aov(model)
+  TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=conf.level)
+  COMPARISONS <- TUKEY[["data$treatment"]][,"p adj"]
+  names_comp = names(COMPARISONS)
+  
   if (mode == "lm") {
-    # What is the effect of the treatment on the value ?
-    # Same as: ANOVA = aov(data$value~data$treatment,data=data)
-    #model=lm(data$value ~ data$treatment)
-    #ANOVA=aov(model)
-    
-    # Tukey test to study each pair of treatment :
-    # Performs the tukey post hoc test on all pairs of treatments for the i'th feature
-    #TUKEY <- TukeyHSD(x=ANOVA, 'data$treatment', conf.level=conf.level)
-    
-    # Extracts the adjusted p-values for each tested pair
-    #COMPARISONS <- TUKEY[["data$treatment"]][,"p adj"]
     
     abscissa <- c(min(c(TUKEY$`data$treatment`[,"lwr"], 0)), max(c(TUKEY$`data$treatment`[,"upr"], 0)))
-    
     # Tukey test representation :
     plot(TUKEY, las=1 , col="brown", xlim = abscissa)
-    
-    # Apply the function on my dataset
-    
-    
+
   } else if (mode == "non-parametric") {
     
-    COMPARISONS = DunnTest(variable = data$value, factor = data$treatment, method = "BH")
+    COMPARISONS = DunnTest(variable = data$value, factor = data$treatment, method = "fdr")
     names(COMPARISONS) = names_comp
     
   } else if (mode == "glm") {
@@ -91,13 +75,12 @@ GlmCustomized <- function(variable,
       fact = as.factor(data$treatment)
     } else if (regfamily == "Gamma") {
       regfamily = Gamma(link="log")
-      #data$value[which.min(data$value)] = data$value[which.min(data$value)] +   0.00000001
       fact = as.factor(data$treatment)
     } else {
       fact = as.factor(data$treatment)
     }
     #here a change is required .. Gamma has to be rescaled to former values
-    COMPARISONS = glm(data$value~fact, family = regfamily) %>% emmeans::emmeans(pairwise ~ fact,adjust = "Tukey")
+    COMPARISONS = glm(data$value~fact, family = regfamily) %>% emmeans::emmeans(pairwise ~ fact, adjust = "Tukey")
     COMPARISONS = summary(COMPARISONS$contrasts)$p.value
     names(COMPARISONS) = names_comp
     
@@ -105,22 +88,14 @@ GlmCustomized <- function(variable,
     stop("ERROR: Please call function with valid mode")
   }
   
-  
   LABELS=generate_label_df(COMPARISONS = COMPARISONS)
-  
-  
   # A panel of colors to draw each group with the same color :
   my_colors2 = cbind(Colors = rainbow(n = length(as.character(unique(LABELS[,"Letters"])))))
   rownames(my_colors2) <- as.character(unique(LABELS[,"Letters"]))
-  
   # integrating the colors into the LABELS object
-  
   LABELS = cbind(LABELS, Colors = my_colors2[as.character(LABELS$Letters),])
-  
   # Reordering data$treatment with the LABELS row order to have the treatments with the correct colors
-  
   data$treatment <- factor(data$treatment, levels = rownames(LABELS))
-  
   
   if (max(na.omit(data$value)) > 0) {
     
@@ -138,14 +113,14 @@ GlmCustomized <- function(variable,
             col = as.character(LABELS$Colors),
             ylab = ylabTukeys,
             xlab = xlabTukeys,
-            main = MainTitle, las = 2, cex.axis = 1)
+            main = MainTitle, las = 2, cex.axis = 1.5)
   
   # I want to write the letter over each box. Over is how high I want to write it.
   over=0.1*max( a$stats[nrow(a$stats),] )
   
   #Add the labels
   text(c(1:nlevels(data$treatment)), a$stats[nrow(a$stats),]+over,
-       LABELS[,1], col = as.character(LABELS$Colors))
+       LABELS[,1], cex=2, col = as.character(LABELS$Colors))
   
   if(returnObject == "Letters") {
     

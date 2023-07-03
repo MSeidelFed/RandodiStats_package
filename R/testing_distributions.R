@@ -24,35 +24,54 @@ testing_distributions <- function(Distribution_test_mat = distribution_test_mat(
   distribution_coords <- rbind(colMeans(distribution_mat[1:1000,]),
                                colMeans(distribution_mat[1001:2000,]),
                                colMeans(distribution_mat[2001:3000,]),
-                               colMeans(distribution_mat[3001:4000,]),
-                               colMeans(distribution_mat[4001:5000,]))
+                               colMeans(distribution_mat[3001:4000,]))
+                               #colMeans(distribution_mat[4001:5000,]))
   
   # Creates a distance matrix between the values for protein_coords and the random values from distribution_coords. 
   dist_mat <- as.matrix(raster::pointDistance(p1 = protein_coords,
                                               p2 = distribution_coords, lonlat = F, allpairs = T))
   
   Family_selection_GLM_R <- cbind(
-    Family = c("gamma","logis","beta","normal","exponential"),
+    Family = c("gamma","logis","beta","exponential","normal"),
     Link = c("Inverse","Logit","Logit","Identity","Inverse"),
-    GLM_R = c("Gamma","quasipoisson","quasibinomial","gaussian","Gamma"))
+    GLM_R = c("Gamma","quasibinomial","quasibinomial","Gamma","gaussian"))
   
   runner <- c()
   
   # Here we loop over the rows of the distance and the smallest value for each row (smallest euclidean distance) is
   # selected. This value determines the chosen distribution.
-  
-  Family = c("gamma","logis","beta","normal","exponential")
+  norm = 0
+  gamm = 0
+  bet = 0
+  exp = 0
+  logis = 0
   for (i in 1:dim(dist_mat)[1]) {
 
     test <- Family_selection_GLM_R[, "Family"][which(dist_mat[i,] == min(dist_mat[i,]))]
+    #print(paste(test, i))
+    if (test == "gamma") {
+      gamm = gamm +1
+    }
+    if (test == "normal") {
+      norm = norm + 1
+    }
+    if (test == "beta") {
+      bet = bet +1
+    }
+    if (test == "exponential") {
+      exp = exp +1
+    }
+    if (test == "logis") {
+      logis = logis + 1
+    }
     equal = distribution_verification(feature = Distribution_test_mat[,i], regfamily = test)
     # assign the appropriate glm input to the test
     if (equal) {
-      print(Family_selection_GLM_R[, "Family"][which(dist_mat[i,] == min(dist_mat[i,]))])
       test = Family_selection_GLM_R[, "GLM_R"][which(Family_selection_GLM_R[,"Family"] == test)]
     }
     # if the selected distributions differ, test will be non-parametric. 
     if (!equal) {
+      print(test)
       test = "non-parametric"
     }
     
@@ -60,6 +79,7 @@ testing_distributions <- function(Distribution_test_mat = distribution_test_mat(
       runner[i] <- test
     }
   }
+  print(c(norm,gamm,exp,logis,bet))
   return(runner)
   
 }

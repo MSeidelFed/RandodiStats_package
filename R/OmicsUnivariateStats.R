@@ -91,17 +91,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                                                     ncol(mat))) - rep(matrixStats::colMins(mat, na.rm = T),
                                                                                       rep.int(nrow(mat),
                                                                                               ncol(mat))))
-  
-  #### zero replacement by small values
-  
-  # Here, zeros are replaced with very small values drawn from a normal distribution with given mean and standard deviation
-  # to mimic noise, as true metabolite levels of 0 do not occur in practice. Is the magnitude of noise always positive?
-  mat_Ubased_norm[which(mat_Ubased_norm == 0)] <- abs(rnorm(n = length(which(mat_Ubased_norm == 0)),
-                                                            mean = 0.0000000000001, sd = 0.0000000001))
-  
-  
+
   class_comparison_mat <- mat_Ubased_norm
-  
   
   ## remove rows full of NAs
   
@@ -184,6 +175,8 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     
   }
   
+  
+  
   ## defining regression families
   
   regfamily <- c()
@@ -200,16 +193,26 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
   
   }
   
+  # ensure that variables that are normal according to a shapiro test are forced to be analyzed through an ANOVA
+  for (i in 1:dim(class_comparison_mat)[2]) {
+    if(shapiro.test(class_comparison_mat[,i])$p.value > 0.05) {
+      regfamily[i] = "gaussian"
+    }
+  }
+  print(regfamily)
+  #### zero replacement by small values
+  
   #reassign unscaled values, otherwise, log-transformation for gamma regression does not work!
-  gamma_vectors = colnames(class_comparison_mat)[which(regfamily=="Gamma")]
+  gamma_vectors = which(regfamily=="Gamma")
   data_original = mat_original[,gamma_vectors]
   class_comparison_mat[,gamma_vectors] = data_original
+  # Here, zeros are replaced with very small values drawn from a normal distribution with given mean and standard deviation
+  # to mimic noise, as true metabolite levels of 0 do not occur in practice. Is the magnitude of noise always positive?
+  class_comparison_mat[which(class_comparison_mat == 0)] <- abs(rnorm(n = length(which(class_comparison_mat == 0)),
+                                                            mean = 0.0000000000001, sd = 0.0000000001))
 
   
   ## for loop for tests
-  
-  
-  
   i = 1
   
   # empty mat to store results of the analysis
@@ -267,7 +270,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
         return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
                                         factor = as.factor(Levene_factor),
                                         mode = "non-parametric",
-                                        MainTitle = colnames(class_comparison_mat)[i], 
+                                        MainTitle = paste(colnames(class_comparison_mat)[i],"non-parametric"), 
                                         returnObject = TukeyReturns)
         
         
@@ -285,7 +288,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
           return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
                                           factor = as.factor(Levene_factor),
                                           mode = "lm",
-                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          MainTitle = paste(colnames(class_comparison_mat)[i],"gaussian"), 
                                           returnObject = TukeyReturns)
           
         } else if (lawstat::levene.test(y = NA_free_var,
@@ -297,7 +300,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
           return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
                                           factor = as.factor(Levene_factor),
                                           mode = "lm",
-                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          MainTitle = paste(colnames(class_comparison_mat)[i],"gaussian"), 
                                           returnObject = TukeyReturns)
           
         } else {
@@ -306,7 +309,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
           return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
                                           factor = as.factor(Levene_factor),
                                           mode = "non-parametric",
-                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          MainTitle = paste(colnames(class_comparison_mat)[i],"non-parametric"), 
                                           returnObject = TukeyReturns)
           plot.new()    
         }
@@ -324,7 +327,7 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                           factor = as.factor(Levene_factor),
                                           mode = "glm",
                                           regfamily = regfamily[i],
-                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          MainTitle = paste(colnames(class_comparison_mat)[i], regfamily[i]), 
                                           returnObject = TukeyReturns)
           plot.new()
           
@@ -334,22 +337,22 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
                                         bootstrap = F)[["p.value"]] < 0.05 &
                    shapiro.test(x = class_comparison_mat[,i])[["p.value"]] < 0.05) {
           
-          
           return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
                                           factor = as.factor(Levene_factor),
                                           mode = "glm",
                                           regfamily = regfamily[i],
-                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          MainTitle = paste(colnames(class_comparison_mat)[i], regfamily[i]), 
                                           returnObject = TukeyReturns)
           plot.new()
           
         } else {
+          
           print("glm to non-parametric")
           regfamily[i] = "non-parametric"
           return_letters <- GlmCustomized(variable = class_comparison_mat[,i],
                                           factor = as.factor(Levene_factor),
                                           mode = "non-parametric",
-                                          MainTitle = colnames(class_comparison_mat)[i], 
+                                          MainTitle = paste(colnames(class_comparison_mat)[i],"non-parametric"), 
                                           returnObject = TukeyReturns)
           plot.new()    
         }
@@ -368,15 +371,6 @@ OmicsUnivariateStats <- function(class_comparison_mat = abs(RandoDiStats::distri
     }
     
     print(c(regfamily[i], "Column Number", count))
-    
-    # Removal of NA's in i'th column for variable and factor
-    #NA_free_var <- class_comparison_mat[,i][!is.na(class_comparison_mat[,i])]
-    
-    #NA_free_factor <- Levene_factor[!is.na(class_comparison_mat[,i])]
-    
-    # Here either a lm or a glm is build depending on the results of the Levene's and shapiro test.
-    # The intercept and the coefficients are stored in test. The intercept is always the control. 
-    # A significant p-value indicates, that the mean of the particular group differs from the mean of the control. 
     
     if (regfamily[i] == "non-parametric") {
       

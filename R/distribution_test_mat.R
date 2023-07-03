@@ -19,13 +19,13 @@ distribution_test_mat <- function(nrow_x = 1000,
     ### vectors of gamma distribution
     test1 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
     for (i in 1:n_random_distributions) {
-      x <- rgamma(n = nrow_x,shape = 0.1,rate = 10)
+      x <- rgamma(n = nrow_x,shape = 2,rate = 0.2)
       test1[,i] <- x
     }
     ### vectors of logis distribution
     test2 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
     for (i in 1:n_random_distributions) {
-      x <- rlogis(n = nrow_x, location = 0.1, scale = 0.01)
+      x <- rlogis(n = nrow_x, location = 2, scale = 0.2)
       test2[,i] <- x
     }
     ### vectors of beta distribution
@@ -34,20 +34,14 @@ distribution_test_mat <- function(nrow_x = 1000,
       x <- rbeta(n = nrow_x, shape1 = 2, shape2 = 1, ncp = 5)
       test3[,i] <- x
     }
-    ### vectors of normal distribution
+    
     test4 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
     for (i in 1:n_random_distributions) {
-      x <- rnorm(n = nrow_x, mean = 0.5, sd = 0.1)
+      x <- rexp(n = nrow_x, rate = 1)
       test4[,i] <- x
     }
-   
-    ### vectors of exponential distribution
-    test5 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
-    for (i in 1:n_random_distributions) {
-      x <- rexp(n = nrow_x, rate = 20)
-      test5[,i] <- x
-    }
-    return(cbind(test1, test2, test3, test4, test5))
+    #normal dist removed at the moment
+    return(cbind(test1, test2, test3, test4))
 
   } else if (class_method == "discovery") {
 
@@ -69,31 +63,13 @@ distribution_test_mat <- function(nrow_x = 1000,
       x <- round(rbeta(n = nrow_x, shape1 = 2, shape2 = 1, ncp = 5),1)
       test3[,i] <- x
     }
-    ### vectors of normal distribution
+    ### vectors of exponential distribution
     test4 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
     for (i in 1:n_random_distributions) {
-      x <- round(rnorm(n = nrow_x, mean = 0, sd = 1),1)
+      x <- round(rexp(n = nrow_x), 1)
       test4[,i] <- x
     }
-    ### vectors of binomial distribution
-    test5 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
-    for (i in 1:n_random_distributions) {
-      x <- rbinom(n = nrow_x, size = 10, prob = 0.5)
-      test5[,i] <- x
-    }
-    ### vectors of poisson distribution
-    test6 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
-    for (i in 1:n_random_distributions) {
-      x <- rpois(n = nrow_x, lambda = 1)
-      test6[,i] <- x
-    }
-    ### vectors of exponential distribution
-    test7 <- matrix(data = NA, nrow = nrow_x, ncol = n_random_distributions)
-    for (i in 1:n_random_distributions) {
-      x <- round(rexp(n = nrow_x), 1)
-      test7[,i] <- x
-    }
-    return(cbind(test1, test2, test3, test4, test5, test6, test7))
-    }
 
+  }
+  return(cbind(test1, test2, test3, test4))
 }
