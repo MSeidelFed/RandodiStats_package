@@ -80,7 +80,7 @@ GlmCustomized <- function(variable,
       fact = as.factor(data$treatment)
     }
     #here a change is required .. Gamma has to be rescaled to former values
-    COMPARISONS = glm(data$value~fact, family = regfamily) %>% emmeans::emmeans(pairwise ~ fact, adjust = "Tukey")
+    COMPARISONS = glm(data$value~fact, family = regfamily$family) %>% emmeans::emmeans(pairwise ~ fact, adjust = "Tukey")
     COMPARISONS = summary(COMPARISONS$contrasts)$p.value
     names(COMPARISONS) = names_comp
     
@@ -113,14 +113,14 @@ GlmCustomized <- function(variable,
             col = as.character(LABELS$Colors),
             ylab = ylabTukeys,
             xlab = xlabTukeys,
-            main = MainTitle, las = 2, cex.axis = 1.5)
+            main = MainTitle, las = 2, cex.axis = 1)
   
   # I want to write the letter over each box. Over is how high I want to write it.
   over=0.1*max( a$stats[nrow(a$stats),] )
   
   #Add the labels
   text(c(1:nlevels(data$treatment)), a$stats[nrow(a$stats),]+over,
-       LABELS[,1], cex=2, col = as.character(LABELS$Colors))
+       LABELS[,1], cex=1, col = as.character(LABELS$Colors))
   
   if(returnObject == "Letters") {
     
